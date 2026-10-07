@@ -10,7 +10,6 @@ async function publicApi(path) {
   if (!response.ok) throw new Error(`API request failed: ${path}`);
   return response.json();
 }
-
 function initChrome() {
   const header = $(".site-header");
   const toggle = $(".menu-toggle");
