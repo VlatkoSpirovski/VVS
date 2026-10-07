@@ -409,6 +409,7 @@ async function initDetailPage() {
     </nav>
   `;
 
+  document.body.classList.add("has-sticky-cta");
   initGallery(root, photos, title);
 }
 
