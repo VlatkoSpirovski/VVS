@@ -19,19 +19,29 @@ function initChrome() {
   updateHeader();
   window.addEventListener("scroll", updateHeader, { passive: true });
 
-  toggle?.addEventListener("click", () => {
-    const open = !document.body.classList.contains("menu-open");
+  const setMenu = (open) => {
     document.body.classList.toggle("menu-open", open);
-    toggle.setAttribute("aria-expanded", String(open));
+    toggle?.setAttribute("aria-expanded", String(open));
     mobileMenu?.setAttribute("aria-hidden", String(!open));
-  });
+  };
+
+  toggle?.addEventListener("click", () => setMenu(!document.body.classList.contains("menu-open")));
 
   mobileMenu?.addEventListener("click", (event) => {
-    if (event.target.matches("a")) {
-      document.body.classList.remove("menu-open");
-      toggle?.setAttribute("aria-expanded", "false");
-      mobileMenu.setAttribute("aria-hidden", "true");
+    if (event.target.closest("a")) setMenu(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && document.body.classList.contains("menu-open")) {
+      setMenu(false);
+      toggle?.focus();
     }
+  });
+
+  document.querySelectorAll("form.filter-bar").forEach((form) => form.addEventListener("submit", (event) => event.preventDefault()));
+
+  window.matchMedia("(min-width: 861px)").addEventListener("change", (event) => {
+    if (event.matches) setMenu(false);
   });
 }
 

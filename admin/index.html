@@ -4,99 +4,173 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>VVS Admin</title>
-    <meta name="robots" content="noindex">
-    <link rel="stylesheet" href="/styles.css">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700&display=swap">
+    <link rel="stylesheet" href="/admin/admin.css">
   </head>
-  <body class="admin-body">
-    <main class="admin-app">
-      <aside class="admin-sidebar">
-        <img class="footer-logo" src="/assets/vvs-auto-logo.jpeg" alt="VVS Auto logo">
-        <nav>
-          <a href="#dashboard">Dashboard</a>
+  <body class="adm">
+    <div class="adm-app">
+      <aside class="adm-sidebar">
+        <a class="adm-brand" href="/admin/">
+          <img src="/assets/vvs-auto-logo.jpeg" alt="" width="40" height="40">
+          <span><strong>VVS Auto</strong><small>Админ</small></span>
+        </a>
+        <nav class="adm-nav" aria-label="Админ">
+          <a href="#overview" class="is-active">Преглед</a>
           <a href="#vehicles">Возила</a>
-          <a href="/mk/">Public MK</a>
-          <a href="/en/">Public EN</a>
+          <button type="button" data-open-editor>Додади возило</button>
         </nav>
-        <button class="button ghost" id="logoutButton" type="button">Log out</button>
+        <div class="adm-nav adm-nav--secondary">
+          <span class="adm-nav__label">Јавна страница</span>
+          <a href="/mk/" target="_blank" rel="noopener">Македонски ↗</a>
+          <a href="/en/" target="_blank" rel="noopener">English ↗</a>
+        </div>
+        <div class="adm-account">
+          <span id="accountEmail" class="adm-account__email"></span>
+          <button class="adm-btn adm-btn--quiet-dark" id="logoutButton" type="button">Одјава</button>
+        </div>
       </aside>
 
-      <div class="admin-main">
-        <header class="admin-top">
-          <div><p class="eyebrow">VVS Admin</p><h1>Управување со возила</h1></div>
-          <div class="button-row"><button class="button dark" id="addVehicleButton" type="button">+ Додади возило</button></div>
+      <main class="adm-main">
+        <header class="adm-top" id="overview">
+          <div>
+            <p class="adm-eyebrow">VVS Admin</p>
+            <h1>Управување со возила</h1>
+          </div>
+          <button class="adm-btn adm-btn--primary" type="button" data-open-editor>+ Додади возило</button>
         </header>
 
-        <section id="dashboard" class="admin-cards"></section>
+        <section class="adm-stats" id="dashboard" aria-label="Преглед">
+          <article class="adm-stat"><span>Возила</span><strong>–</strong></article>
+          <article class="adm-stat"><span>Објавени</span><strong>–</strong></article>
+          <article class="adm-stat"><span>Нацрти</span><strong>–</strong></article>
+          <article class="adm-stat"><span>Издвоени</span><strong>–</strong></article>
+        </section>
 
-        <section id="vehicles" class="admin-panel">
-          <div class="admin-panel__head"><div><p class="eyebrow">Inventory</p><h2>Возила</h2></div></div>
-          <div class="admin-table-wrap">
-            <table class="admin-table">
+        <section class="adm-panel" id="vehicles">
+          <div class="adm-panel__head">
+            <div>
+              <h2>Возила</h2>
+              <p class="adm-muted" id="vehicleCount">Се вчитува…</p>
+            </div>
+            <label class="adm-search">
+              <span class="visually-hidden">Пребарај возила</span>
+              <input id="vehicleSearch" type="search" placeholder="Пребарај марка, модел, година…" autocomplete="off">
+            </label>
+          </div>
+          <div class="adm-table-wrap">
+            <table class="adm-table">
               <thead><tr><th>Фото</th><th>Возило</th><th>Година</th><th>Гориво</th><th>Километража</th><th>Објавено</th><th>Акции</th></tr></thead>
               <tbody id="vehicleRows"></tbody>
             </table>
           </div>
+          <p class="adm-empty" id="vehicleEmpty" hidden></p>
         </section>
+      </main>
+    </div>
 
-        <section class="admin-panel" id="editorPanel" hidden>
-          <div class="admin-panel__head"><div><p class="eyebrow">Vehicle editor</p><h2 id="editorTitle">Додади возило</h2></div></div>
-          <form id="vehicleForm" class="admin-form">
+    <div class="adm-drawer" id="editorPanel" hidden>
+      <div class="adm-drawer__backdrop" data-close-editor></div>
+      <section class="adm-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+        <form id="vehicleForm" class="adm-editor" novalidate>
+          <header class="adm-editor__head">
+            <div>
+              <p class="adm-eyebrow" id="editorEyebrow">Ново возило</p>
+              <h2 id="editorTitle">Додади возило</h2>
+            </div>
+            <button class="adm-icon-btn" type="button" data-close-editor aria-label="Затвори">✕</button>
+          </header>
+
+          <div class="adm-editor__body">
             <input type="hidden" id="vehicleId">
             <input type="hidden" id="slug">
             <input type="hidden" id="stockNumber">
-            <input type="hidden" id="price">
             <input type="hidden" id="currency" value="EUR">
-            <input type="hidden" id="status" value="published">
 
-            <div class="static-car-form">
-              <section class="form-card fixed-fields-card">
-                <p class="eyebrow">Фиксни полиња</p>
-                <h3>Спецификација</h3>
-                <div class="admin-form-grid">
-                  <div class="field"><label for="brand">Марка</label><input id="brand" required></div>
-                  <div class="field"><label for="model">Модел</label><input id="model" required></div>
-                  <div class="field"><label for="year">Година</label><input id="year" type="number"></div>
-                  <div class="field"><label for="fuel">Гориво</label><input id="fuel"></div>
-                  <div class="field"><label for="mileage">Километри</label><input id="mileage" type="number"></div>
-                  <div class="field"><label for="transmission">Менувач</label><input id="transmission"></div>
-                  <div class="field"><label for="bodyType">Каросерија</label><input id="bodyType"></div>
-                  <div class="field"><label for="exteriorColor">Боја</label><input id="exteriorColor"></div>
-                  <div class="field"><label for="registration">Регистрација</label><input id="registration"></div>
-                  <div class="field"><label for="registeredUntil">Регистрирана до</label><input id="registeredUntil" placeholder="09.2026"></div>
-                  <div class="field"><label for="power">Сила на моторот</label><input id="power" placeholder="81 kw / 110 ks"></div>
-                  <div class="field"><label for="emissionClass">Класа на емисија</label><input id="emissionClass" placeholder="Euro 5"></div>
+            <fieldset class="adm-section">
+              <legend>Спецификација</legend>
+              <div class="adm-grid">
+                <div class="adm-field"><label for="brand">Марка <em>*</em></label><input id="brand" required maxlength="80" autocomplete="off"></div>
+                <div class="adm-field"><label for="model">Модел <em>*</em></label><input id="model" required maxlength="80" autocomplete="off"></div>
+                <div class="adm-field"><label for="year">Година</label><input id="year" type="number" inputmode="numeric" min="1900" max="2100" step="1"></div>
+                <div class="adm-field"><label for="mileage">Километри</label><input id="mileage" type="number" inputmode="numeric" min="0" step="1"></div>
+                <div class="adm-field"><label for="fuel">Гориво</label><input id="fuel" list="fuelOptions" maxlength="120"></div>
+                <div class="adm-field"><label for="transmission">Менувач</label><input id="transmission" list="transmissionOptions" maxlength="120"></div>
+                <div class="adm-field"><label for="bodyType">Каросерија</label><input id="bodyType" list="bodyOptions" maxlength="120"></div>
+                <div class="adm-field"><label for="exteriorColor">Боја</label><input id="exteriorColor" list="colorOptions" maxlength="120"></div>
+                <div class="adm-field"><label for="power">Сила на моторот</label><input id="power" placeholder="81 kw / 110 ks" maxlength="120"></div>
+                <div class="adm-field"><label for="emissionClass">Класа на емисија</label><input id="emissionClass" placeholder="Euro 5" maxlength="120"></div>
+                <div class="adm-field"><label for="registration">Регистрација</label><input id="registration" maxlength="120"></div>
+                <div class="adm-field"><label for="registeredUntil">Регистрирана до</label><input id="registeredUntil" placeholder="09.2026" maxlength="120"></div>
+              </div>
+            </fieldset>
+
+            <fieldset class="adm-section">
+              <legend>Цена и статус</legend>
+              <div class="adm-grid">
+                <div class="adm-field">
+                  <label for="price">Цена (EUR)</label>
+                  <input id="price" type="number" inputmode="numeric" min="0" step="1" placeholder="Празно = Цена по договор">
                 </div>
-              </section>
-
-              <section class="form-card">
-                <p class="eyebrow">Превод</p>
-                <h3>Опис на возило</h3>
-                <div class="translation-stack">
-                  <div class="field"><label for="descriptionMk">Македонски</label><textarea id="descriptionMk" rows="5"></textarea></div>
-                  <div class="field"><label for="descriptionSq">Shqip</label><textarea id="descriptionSq" rows="5"></textarea></div>
-                  <div class="field"><label for="descriptionEn">English</label><textarea id="descriptionEn" rows="5"></textarea></div>
+                <div class="adm-field">
+                  <label for="status">Статус</label>
+                  <select id="status">
+                    <option value="published">Достапно</option>
+                    <option value="reserved">Резервирано</option>
+                    <option value="sold">Продадено</option>
+                  </select>
                 </div>
-              </section>
+              </div>
+            </fieldset>
 
-              <section class="form-card">
-                <p class="eyebrow">Фотографии</p>
-                <h3>Слики</h3>
-                <label class="upload-zone" for="photoUpload">Upload vehicle images<input id="photoUpload" type="file" accept="image/*" multiple hidden></label>
-                <div class="photo-admin-grid" id="photoPreview"></div>
-              </section>
+            <fieldset class="adm-section">
+              <legend>Опис</legend>
+              <div class="adm-tabs" role="tablist" aria-label="Јазик на описот">
+                <button type="button" role="tab" class="adm-tab is-active" aria-selected="true" data-tab="descriptionMk">Македонски</button>
+                <button type="button" role="tab" class="adm-tab" aria-selected="false" data-tab="descriptionSq">Shqip</button>
+                <button type="button" role="tab" class="adm-tab" aria-selected="false" data-tab="descriptionEn">English</button>
+              </div>
+              <textarea id="descriptionMk" class="adm-textarea" rows="8" maxlength="10000" aria-label="Опис на македонски"></textarea>
+              <textarea id="descriptionSq" class="adm-textarea" rows="8" maxlength="10000" aria-label="Përshkrimi në shqip" hidden></textarea>
+              <textarea id="descriptionEn" class="adm-textarea" rows="8" maxlength="10000" aria-label="Description in English" hidden></textarea>
+            </fieldset>
 
-              <section class="form-card publish-card">
-                <p class="eyebrow">Објава</p>
-                <label class="check-field"><input id="published" type="checkbox" checked> Објавено на веб</label>
-                <label class="check-field"><input id="featured" type="checkbox"> Издвоено на почетна</label>
-              </section>
-            </div>
+            <fieldset class="adm-section">
+              <legend>Фотографии</legend>
+              <label class="adm-upload" for="photoUpload" id="uploadZone">
+                <strong>Додади слики</strong>
+                <span>Кликни или повлечи слики тука. Првата е насловна; повлечи ги картичките за редослед.</span>
+                <input id="photoUpload" type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple hidden>
+              </label>
+              <p class="adm-muted" id="uploadStatus" aria-live="polite"></p>
+              <div class="adm-photos" id="photoPreview"></div>
+            </fieldset>
 
-            <div class="button-row"><button class="button dark" type="submit">Save vehicle</button><button class="button ghost" id="cancelEditButton" type="button">Cancel</button></div>
-          </form>
-        </section>
-      </div>
-    </main>
+            <fieldset class="adm-section adm-section--row">
+              <legend>Објава</legend>
+              <label class="adm-check"><input id="published" type="checkbox" checked> Објавено на веб</label>
+              <label class="adm-check"><input id="featured" type="checkbox"> Издвоено на почетна</label>
+            </fieldset>
+          </div>
+
+          <footer class="adm-editor__foot">
+            <p class="adm-form-error" id="formError" role="alert"></p>
+            <button class="adm-btn adm-btn--ghost" type="button" data-close-editor>Откажи</button>
+            <button class="adm-btn adm-btn--primary" type="submit" id="saveButton">Зачувај</button>
+          </footer>
+        </form>
+      </section>
+    </div>
+
+    <datalist id="fuelOptions"><option value="Diesel">Дизел</option><option value="Petrol">Бензин</option><option value="Hybrid">Хибрид</option><option value="Electric">Електрично</option></datalist>
+    <datalist id="transmissionOptions"><option value="Manual">Рачен</option><option value="Automatic">Автоматски</option><option value="Semi-automatic">Полуавтоматски</option></datalist>
+    <datalist id="bodyOptions"><option value="Sedan">Седан</option><option value="Hatchback">Хечбек</option><option value="Estate">Караван</option><option value="SUV">SUV</option><option value="Coupe">Купе</option><option value="Convertible">Кабриолет</option><option value="Van">Комбе</option></datalist>
+    <datalist id="colorOptions"><option value="Black">Црна</option><option value="White">Бела</option><option value="Silver">Сребрена</option><option value="Grey">Сива</option><option value="Blue">Сина</option><option value="Red">Црвена</option><option value="Green">Зелена</option><option value="Brown">Кафеава</option><option value="Beige">Беж</option></datalist>
+
+    <div class="adm-toast" id="toast" role="status" aria-live="polite" hidden></div>
+
     <script src="/data.js"></script>
     <script src="/admin/admin.js"></script>
   </body>

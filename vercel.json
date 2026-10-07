@@ -4,7 +4,7 @@
   "functions": {
     "api/index.js": {
       "maxDuration": 15,
-      "includeFiles": "{admin/**,assets/**,en/**,mk/**,about/**,contact/**,vehicles/**,styles.css,app.js,data.js,index.html,vehicle-detail.html}"
+      "includeFiles": "{admin/**,assets/**,en/**,mk/**,styles.css,app.js,data.js,vehicle-detail.html}"
     }
   },
   "rewrites": [
