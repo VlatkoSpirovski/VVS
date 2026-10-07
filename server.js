@@ -537,7 +537,7 @@ app.get("/admin/login", (req, res) => {
   sendPage(res, "admin", "login.html");
 });
 
-app.get("/admin", requireAuth, (req, res) => res.redirect("/admin/"));
+app.get("/admin", requireAuth, (req, res) => sendPage(res, "admin", "index.html"));
 app.get("/admin/", requireAuth, (req, res) => sendPage(res, "admin", "index.html"));
 app.get("/admin/admin.js", requireAuth, (req, res) => sendPage(res, "admin", "admin.js"));
 app.get("/admin/login.js", (req, res) => sendPage(res, "admin", "login.js"));
