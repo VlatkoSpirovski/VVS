@@ -3,30 +3,85 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>VVS | Премиум автомобили</title>
-    <meta name="description" content="VVS е премиум автомобилска продажна презентација со внимателно избрани возила.">
-    <link rel="canonical" href="https://vvs-auto.local/mk/">
-    <link rel="alternate" hreflang="mk" href="https://vvs-auto.local/mk/">
-    <link rel="alternate" hreflang="en" href="https://vvs-auto.local/en/">
+    <title>VVS Auto | Половни автомобили, Скопје</title>
+    <meta name="description" content="VVS Auto – проверени половни автомобили во Скопје. Цена, фотографии и директен контакт.">
+    <meta name="theme-color" content="#0b0c0f">
+    <link rel="icon" href="/assets/vvs-auto-logo.jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&display=swap">
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
     <header class="site-header">
       <nav class="nav" aria-label="Main navigation">
-        <a class="brand" data-href="home" href="/mk/"><img src="/assets/vvs-auto-logo.jpeg" alt="VVS Auto logo"><span>VVS</span></a>
-        <div class="nav-links"><a class="active" data-href="home" data-i18n="home" href="/mk/">Почетна</a><a data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a></div>
-        <div class="nav-actions"><a class="lang-link" data-lang-switch="mk" href="/mk/">MK</a><a class="lang-link" data-lang-switch="en" href="/en/">EN</a><a class="button ghost" data-href="vehicles" data-i18n="exploreVehicles" href="/mk/vozila/">Погледнете возила</a><button class="icon-button menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">Menu</button></div>
+        <a class="brand" data-href="home" href="/mk/"><img src="/assets/vvs-auto-logo.jpeg" alt="" width="40" height="40"><span>VVS Auto</span></a>
+        <div class="nav-links"><a class="active" aria-current="page" data-href="home" data-i18n="home" href="/mk/">Почетна</a><a data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a></div>
+        <div class="nav-actions">
+          <div class="lang-switch"><a class="lang-link" data-lang-switch="mk" href="/mk/">MK</a><a class="lang-link" data-lang-switch="en" href="/en/">EN</a></div>
+          <a class="button button--small nav-call" href="tel:+38978427074">Повикај</a>
+          <button class="menu-toggle" type="button" aria-label="Мени" aria-expanded="false"><span></span><span></span></button>
+        </div>
       </nav>
+      <div class="mobile-menu" aria-hidden="true"><a class="active" aria-current="page" data-href="home" data-i18n="home" href="/mk/">Почетна</a><a data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a><div class="mobile-menu__lang"><a data-lang-switch="mk" href="/mk/">MK</a><a data-lang-switch="en" href="/en/">EN</a></div><a class="button" href="tel:+38978427074">Повикај +389 78 427 074</a></div>
     </header>
-    <div class="mobile-menu" aria-hidden="true"><a data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a><a data-lang-switch="mk" href="/mk/">MK</a><a data-lang-switch="en" href="/en/">EN</a></div>
     <main id="homePage">
-      <section class="hero"><div class="hero-inner"><p class="eyebrow reveal" data-i18n="heroEyebrow">Премиум автомобили</p><h1 class="reveal" data-i18n="heroTitle">Одберете го вашиот следен автомобил.</h1><p class="reveal" data-i18n="heroText">VVS претставува внимателно избрани автомобили.</p><div class="hero-actions reveal"><a class="button" data-href="vehicles" data-i18n="exploreVehicles" href="/mk/vozila/">Погледнете ги возилата</a><a class="button ghost" data-href="contact" data-i18n="contactVvs" href="/mk/kontakt/">Контактирајте не</a></div></div></section>
-      <section class="section"><div class="container"><div class="section-head reveal"><div><p class="eyebrow" data-i18n="featuredEyebrow">Избрана понуда</p><h2 data-i18n="featuredTitle">Возила што вреди да се видат.</h2></div><p data-i18n="featuredText">Избраните модели се прикажани со клучни спецификации.</p></div><div class="vehicle-grid" id="featuredVehicles"></div></div></section>
-      <section class="showcase"><div class="showcase-grid"><div class="showcase-copy reveal"><p class="eyebrow" data-i18n="showcaseEyebrow">VVS селекција</p><h2 data-i18n="showcaseTitle">Перформанси со присуство.</h2><p data-i18n="showcaseText">Голема фотографија и клучни бројки.</p><div class="spec-row" id="showcaseSpecs"></div><a class="button" id="showcaseLink" data-i18n="viewVehicle" href="/mk/vozila/">Погледнете возило</a></div><div class="showcase-image" role="img" aria-label="Cinematic vehicle"></div></div></section>
-      <section class="section"><div class="container"><div class="section-head reveal"><div><p class="eyebrow" data-i18n="whyEyebrow">Зошто VVS</p><h2 data-i18n="whyTitle">Јасно, внимателно, директно.</h2></div><p data-i18n="whyText">Фокусот е на доверба.</p></div><div class="trust-grid"><article class="trust-item reveal"><strong>Селекција</strong><p>Фокусирана понуда за модели што заслужуваат внимание.</p></article><article class="trust-item reveal"><strong>Информации</strong><p>Цена, година, километража и опрема се лесни за споредба.</p></article><article class="trust-item reveal"><strong>Контакт</strong><p>Повик и WhatsApp се достапни на секоја клучна страница.</p></article><article class="trust-item reveal"><strong>Искуство</strong><p>Премиум визуелен ритам и мобилна ергономија.</p></article></div></div></section>
-      <section class="cta-band"><div class="container reveal"><p class="eyebrow" data-i18n="ctaEyebrow">Вашиот следен автомобил</p><h2 data-i18n="ctaTitle">Подготвени кога вистинското возило ќе се појави.</h2><div class="button-row"><a class="button" href="tel:+38978427074">+389 78 427 074</a><a class="button ghost" href="tel:+38978391140">+389 78 391 140</a></div></div></section>
+      <section class="hero">
+        <div class="container hero__grid">
+          <div class="hero__copy">
+            <p class="eyebrow" data-i18n="heroEyebrow"></p>
+            <h1 data-i18n="heroTitle"></h1>
+            <p class="hero__text" data-i18n="heroText"></p>
+            <div class="button-row">
+              <a class="button" data-href="vehicles" data-i18n="exploreVehicles" href="/mk/vozila/"></a>
+              <a class="button button--whatsapp" href="https://wa.me/38978427074" target="_blank" rel="noopener">WhatsApp</a>
+            </div>
+            <ul class="hero__points">
+              <li>Проверени возила</li>
+              <li>Јасна цена</li>
+              <li>Гледање по договор</li>
+            </ul>
+          </div>
+          <a class="hero__media" id="heroVehicle" href="/mk/vozila/"><img id="heroImage" src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1400&q=80" alt=""><span class="hero__tag" id="heroTag"></span></a>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <div><p class="eyebrow" data-i18n="featuredEyebrow"></p><h2 data-i18n="featuredTitle"></h2></div>
+            <a class="link-arrow" data-href="vehicles" href="/mk/vozila/">Сите возила →</a>
+          </div>
+          <div class="vehicle-grid" id="featuredVehicles"></div>
+        </div>
+      </section>
+      <section class="section section--muted">
+        <div class="container">
+          <div class="section-head"><div><p class="eyebrow" data-i18n="whyEyebrow"></p><h2 data-i18n="whyTitle"></h2></div></div>
+          <div class="trust-grid">
+            <article class="trust-item"><strong>Проверени возила</strong><p>Секое возило е прегледано пред да се објави.</p></article>
+            <article class="trust-item"><strong>Јасни информации</strong><p>Цена, километража, опрема и фотографии на едно место.</p></article>
+            <article class="trust-item"><strong>Директен контакт</strong><p>Повик или WhatsApp, без посредници.</p></article>
+            <article class="trust-item"><strong>Гледање по договор</strong><p>Договорете термин што ви одговара.</p></article>
+          </div>
+        </div>
+      </section>
+      <section class="cta-band">
+        <div class="container cta-band__inner">
+          <div><p class="eyebrow" data-i18n="ctaEyebrow"></p><h2 data-i18n="ctaTitle"></h2></div>
+          <div class="button-row"><a class="button" href="tel:+38978427074">+389 78 427 074</a><a class="button button--whatsapp" href="https://wa.me/38978427074" target="_blank" rel="noopener">WhatsApp</a></div>
+        </div>
+      </section>
     </main>
-    <footer class="site-footer"><div class="container footer-grid"><div><img class="footer-logo" src="/assets/vvs-auto-logo.jpeg" alt="VVS Auto logo"><p>Premium automotive sales.</p></div><div><h3>Explore</h3><div class="footer-links"><a data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a><a href="/admin/">Admin</a></div></div><div><h3>Contact</h3><div class="footer-links"><a href="tel:+38978427074">+389 78 427 074</a><a href="tel:+38978391140">+389 78 391 140</a></div></div><div><h3 data-i18n="location">Локација</h3><p>Skopje, North Macedonia<br><span data-i18n="appointment">По договор</span></p></div></div><div class="container footer-bottom">© 2026 VVS Auto.</div></footer>
-    <script src="/data.js"></script><script src="/app.js"></script>
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div><a class="brand brand--footer" href="/mk/"><img src="/assets/vvs-auto-logo.jpeg" alt="" width="40" height="40"><span>VVS Auto</span></a><p>Возила со проверена историја, јасна цена и директен контакт.</p></div>
+        <div><h3>Возила</h3><div class="footer-links"><a data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a></div></div>
+        <div><h3>Контакт</h3><div class="footer-links"><a href="tel:+38978427074">+389 78 427 074</a><a href="tel:+38978391140">+389 78 391 140</a><a href="https://wa.me/38978427074" target="_blank" rel="noopener">WhatsApp</a></div></div>
+        <div><h3 data-i18n="location">Локација</h3><p>Скопје, Северна Македонија<br><span data-i18n="appointment">По договор</span></p></div>
+      </div>
+      <div class="container footer-bottom">© 2026 VVS Auto. Сите права задржани.</div>
+    </footer>
+    <script src="/data.js"></script>
+    <script src="/app.js"></script>
   </body>
 </html>

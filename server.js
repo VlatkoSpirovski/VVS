@@ -554,7 +554,69 @@ app.get("/admin/", requireAuth, (req, res) => sendPage(res, "admin", "index.html
 app.get("/admin/admin.js", requireAuth, (req, res) => sendPage(res, "admin", "admin.js"));
 app.get("/admin/login.js", (req, res) => sendPage(res, "admin", "login.js"));
 
+function siteUrl(req) {
+  const configured = (process.env.SITE_URL || "").replace(/\/+$/, "");
+  return configured || `${req.protocol}://${req.get("host")}`;
+}
+
+function xmlEscape(value) {
+  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+app.get("/sitemap.xml", async (req, res, next) => {
+  try {
+    const base = siteUrl(req);
+    const pairs = [
+      ["/mk/", "/en/", "1.0", "daily"],
+      ["/mk/vozila/", "/en/vehicles/", "0.9", "daily"],
+      ["/mk/za-nas/", "/en/about/", "0.5", "monthly"],
+      ["/mk/kontakt/", "/en/contact/", "0.6", "monthly"]
+    ];
+    const vehicles = await fetchVehicles({ lang: "mk" });
+    for (const vehicle of vehicles) {
+      if (!vehicle.slug) continue;
+      const slug = encodeURIComponent(vehicle.slug);
+      const lastmod = new Date(vehicle.updatedAt || vehicle.createdAt || Date.now()).toISOString().slice(0, 10);
+      pairs.push([`/mk/vozila/${slug}`, `/en/vehicles/${slug}`, vehicle.status === "sold" ? "0.4" : "0.8", "weekly", lastmod]);
+    }
+    const entry = (path, mk, en, priority, changefreq, lastmod) => `  <url>
+    <loc>${xmlEscape(base + path)}</loc>${lastmod ? `
+    <lastmod>${lastmod}</lastmod>` : ""}
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+    <xhtml:link rel="alternate" hreflang="mk" href="${xmlEscape(base + mk)}"/>
+    <xhtml:link rel="alternate" hreflang="en" href="${xmlEscape(base + en)}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(base + mk)}"/>
+  </url>`;
+    const urls = pairs.flatMap(([mk, en, priority, changefreq, lastmod]) => [
+      entry(mk, mk, en, priority, changefreq, lastmod),
+      entry(en, mk, en, priority, changefreq, lastmod)
+    ]);
+    res.type("application/xml").set("Cache-Control", "public, max-age=3600").send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${urls.join("\n")}
+</urlset>
+`);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/robots.txt", (req, res) => {
+  res.type("text/plain").send(`User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: ${siteUrl(req)}/sitemap.xml
+`);
+});
+
 app.get("/", (req, res) => res.redirect("/mk"));
+app.get(["/vehicles", "/vehicles/"], (req, res) => res.redirect(301, "/en/vehicles/"));
+app.get("/vehicles/:slug.html", (req, res) => res.redirect(301, `/en/vehicles/${encodeURIComponent(req.params.slug)}`));
+app.get(["/about", "/about/"], (req, res) => res.redirect(301, "/en/about/"));
+app.get(["/contact", "/contact/"], (req, res) => res.redirect(301, "/en/contact/"));
 app.get("/mk", (req, res) => sendPage(res, "mk", "index.html"));
 app.get("/en", (req, res) => sendPage(res, "en", "index.html"));
 app.get("/mk/", (req, res) => sendPage(res, "mk", "index.html"));
@@ -571,8 +633,10 @@ app.get("/mk/za-nas/", (req, res) => sendPage(res, "mk", "za-nas", "index.html")
 app.get("/en/about/", (req, res) => sendPage(res, "en", "about", "index.html"));
 app.get("/mk/kontakt/", (req, res) => sendPage(res, "mk", "kontakt", "index.html"));
 app.get("/en/contact/", (req, res) => sendPage(res, "en", "contact", "index.html"));
-app.get("/mk/vozila/:slug.html", (req, res) => sendPage(res, "vehicle-detail.html"));
-app.get("/en/vehicles/:slug.html", (req, res) => sendPage(res, "vehicle-detail.html"));
+app.get("/mk/vozila/:slug.html", (req, res) => res.redirect(301, `/mk/vozila/${encodeURIComponent(req.params.slug)}`));
+app.get("/en/vehicles/:slug.html", (req, res) => res.redirect(301, `/en/vehicles/${encodeURIComponent(req.params.slug)}`));
+app.get("/mk/vozila/:slug", (req, res) => sendPage(res, "vehicle-detail.html"));
+app.get("/en/vehicles/:slug", (req, res) => sendPage(res, "vehicle-detail.html"));
 
 app.use(express.static(root, { extensions: ["html"] }));
 

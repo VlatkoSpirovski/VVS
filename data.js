@@ -17,7 +17,6 @@ const i18n = {
     admin: "Админ",
     call: "Повикај",
     whatsapp: "WhatsApp",
-    inquire: "Испрати барање",
     viewVehicle: "Погледнете возило",
     exploreVehicles: "Погледнете ги возилата",
     contactVvs: "Контактирајте не",
@@ -57,6 +56,20 @@ const i18n = {
     specifications: "Спецификации",
     equipment: "Опрема",
     selectedSpec: "Избрана спецификација",
+    priceOnRequest: "Цена по договор",
+    keyFacts: "Клучни податоци",
+    description: "Опис",
+    allPhotos: "Сите фотографии",
+    photos: "фотографии",
+    close: "Затвори",
+    previous: "Претходна",
+    next: "Следна",
+    backToVehicles: "Назад кон возилата",
+    sendRequest: "Испрати барање",
+    formSent: "Благодариме! Ќе ве контактираме наскоро.",
+    formError: "Пораката не е испратена. Обидете се повторно или јавете се.",
+    vehicleMessage: "Здраво, заинтересиран сум за ова возило.",
+    noVehicles: "Нема возила што одговараат на филтрите.",
     interested: "Заинтересирани сте?",
     speak: "Разговарајте со VVS",
     speakText: "Побарајте детали, договорете гледање или испратете барање за конкретното возило.",
@@ -88,7 +101,6 @@ const i18n = {
     admin: "Admin",
     call: "Call",
     whatsapp: "WhatsApp",
-    inquire: "Send inquiry",
     viewVehicle: "View vehicle",
     exploreVehicles: "Explore vehicles",
     contactVvs: "Contact VVS",
@@ -128,6 +140,20 @@ const i18n = {
     specifications: "Specifications",
     equipment: "Equipment",
     selectedSpec: "Selected specification",
+    priceOnRequest: "Price on request",
+    keyFacts: "Key facts",
+    description: "Description",
+    allPhotos: "All photos",
+    photos: "photos",
+    close: "Close",
+    previous: "Previous",
+    next: "Next",
+    backToVehicles: "Back to vehicles",
+    sendRequest: "Send request",
+    formSent: "Thank you! We will contact you shortly.",
+    formError: "The message was not sent. Please try again or call us.",
+    vehicleMessage: "Hello, I am interested in this vehicle.",
+    noVehicles: "No vehicles match these filters.",
     interested: "Interested?",
     speak: "Speak with VVS",
     speakText: "Get details, arrange a viewing, or send an inquiry for this vehicle.",
@@ -427,7 +453,7 @@ function vehiclesPath(lang = getLang()) {
 }
 
 function vehicleUrl(vehicle, lang = getLang()) {
-  return `${vehiclesPath(lang)}${vehicle.slug || vehicle.id}.html`;
+  return `${vehiclesPath(lang)}${vehicle.slug || vehicle.id}`;
 }
 
 function getVehicles({ includeDrafts = false } = {}) {
@@ -473,7 +499,8 @@ function fuelFor(value, lang = getLang()) {
   return fuelLabels[value]?.[lang] || value;
 }
 
-function formatPrice(vehicle) {
+function formatPrice(vehicle, lang = getLang()) {
+  if (!Number(vehicle.price)) return i18n[lang].priceOnRequest;
   return new Intl.NumberFormat("de-DE", {
     style: "currency",
     currency: vehicle.currency || "EUR",
@@ -492,4 +519,47 @@ function slugify(value) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+const valueLabels = {
+  manual: { mk: "Рачен", en: "Manual" },
+  automatic: { mk: "Автоматски", en: "Automatic" },
+  "semi-automatic": { mk: "Полуавтоматски", en: "Semi-automatic" },
+  black: { mk: "Црна", en: "Black" },
+  white: { mk: "Бела", en: "White" },
+  silver: { mk: "Сребрена", en: "Silver" },
+  grey: { mk: "Сива", en: "Grey" },
+  gray: { mk: "Сива", en: "Grey" },
+  blue: { mk: "Сина", en: "Blue" },
+  red: { mk: "Црвена", en: "Red" },
+  green: { mk: "Зелена", en: "Green" },
+  brown: { mk: "Кафеава", en: "Brown" },
+  beige: { mk: "Беж", en: "Beige" },
+  yellow: { mk: "Жолта", en: "Yellow" },
+  orange: { mk: "Портокалова", en: "Orange" },
+  sedan: { mk: "Седан", en: "Sedan" },
+  hatchback: { mk: "Хечбек", en: "Hatchback" },
+  estate: { mk: "Караван", en: "Estate" },
+  wagon: { mk: "Караван", en: "Estate" },
+  coupe: { mk: "Купе", en: "Coupe" },
+  convertible: { mk: "Кабриолет", en: "Convertible" },
+  van: { mk: "Комбе", en: "Van" },
+  fwd: { mk: "Преден погон", en: "Front-wheel drive" },
+  rwd: { mk: "Заден погон", en: "Rear-wheel drive" },
+  awd: { mk: "4x4", en: "All-wheel drive" },
+  "4x4": { mk: "4x4", en: "4x4" }
+};
+
+function labelFor(value, lang = getLang()) {
+  if (value === null || value === undefined || value === "") return "";
+  return valueLabels[String(value).trim().toLowerCase()]?.[lang] || value;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }

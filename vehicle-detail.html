@@ -3,19 +3,38 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>VVS | Vehicle</title>
-    <meta name="description" content="VVS vehicle detail.">
+    <title>VVS Auto</title>
+    <meta name="description" content="VVS Auto">
+    <meta name="theme-color" content="#0b0c0f">
+    <link rel="icon" href="/assets/vvs-auto-logo.jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&display=swap">
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
     <header class="site-header">
-      <nav class="nav">
-        <a class="brand" data-href="home" href="/mk/"><img src="/assets/vvs-auto-logo.jpeg" alt="VVS Auto logo"><span>VVS</span></a>
-        <div class="nav-links"><a data-href="home" data-i18n="home" href="/mk/">Почетна</a><a class="active" data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a></div>
-        <div class="nav-actions"><a class="lang-link" data-lang-switch="mk" href="/mk/">MK</a><a class="lang-link" data-lang-switch="en" href="/en/">EN</a><button class="icon-button menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">Menu</button></div>
+      <nav class="nav" aria-label="Main navigation">
+        <a class="brand" data-href="home" href="/mk/"><img src="/assets/vvs-auto-logo.jpeg" alt="" width="40" height="40"><span>VVS Auto</span></a>
+        <div class="nav-links"><a data-href="home" data-i18n="home" href="/mk/">Почетна</a><a class="active" aria-current="page" data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a></div>
+        <div class="nav-actions">
+          <div class="lang-switch"><a class="lang-link" data-lang-switch="mk" href="/mk/">MK</a><a class="lang-link" data-lang-switch="en" href="/en/">EN</a></div>
+          <a class="button button--small nav-call" href="tel:+38978427074">Повикај</a>
+          <button class="menu-toggle" type="button" aria-label="Мени" aria-expanded="false"><span></span><span></span></button>
+        </div>
       </nav>
+      <div class="mobile-menu" aria-hidden="true"><a data-href="home" data-i18n="home" href="/mk/">Почетна</a><a class="active" aria-current="page" data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a><div class="mobile-menu__lang"><a data-lang-switch="mk" href="/mk/">MK</a><a data-lang-switch="en" href="/en/">EN</a></div><a class="button" href="tel:+38978427074">Повикај +389 78 427 074</a></div>
     </header>
-    <main id="vehicleDetail"></main>
+    <main id="vehicleDetail" class="detail-page"><div class="container detail-loading" aria-busy="true"></div></main>
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div><a class="brand brand--footer" href="/mk/"><img src="/assets/vvs-auto-logo.jpeg" alt="" width="40" height="40"><span>VVS Auto</span></a><p>Возила со проверена историја, јасна цена и директен контакт.</p></div>
+        <div><h3>Возила</h3><div class="footer-links"><a class="active" aria-current="page" data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a></div></div>
+        <div><h3>Контакт</h3><div class="footer-links"><a href="tel:+38978427074">+389 78 427 074</a><a href="tel:+38978391140">+389 78 391 140</a><a href="https://wa.me/38978427074" target="_blank" rel="noopener">WhatsApp</a></div></div>
+        <div><h3 data-i18n="location">Локација</h3><p>Скопје, Северна Македонија<br><span data-i18n="appointment">По договор</span></p></div>
+      </div>
+      <div class="container footer-bottom">© 2026 VVS Auto. Сите права задржани.</div>
+    </footer>
     <script src="/data.js"></script>
     <script src="/app.js"></script>
   </body>

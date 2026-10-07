@@ -82,32 +82,37 @@ function localizeShell() {
 
 function switchLanguageUrl(targetLang) {
   const path = window.location.pathname;
-  const id = $("#vehicleDetail")?.dataset.vehicleId;
-  if (id) return `${vehiclesPath(targetLang)}${id}.html`;
+  const slug = $("#vehicleDetail")?.dataset.slug;
+  if (slug) return `${vehiclesPath(targetLang)}${slug}`;
   if (path.includes("/vehicles") || path.includes("/vozila")) return vehiclesPath(targetLang);
   if (path.includes("/about") || path.includes("/za-nas")) return `${publicBase(targetLang)}/${targetLang === "en" ? "about" : "za-nas"}/`;
   if (path.includes("/contact") || path.includes("/kontakt")) return `${publicBase(targetLang)}/${targetLang === "en" ? "contact" : "kontakt"}/`;
   return `${publicBase(targetLang)}/`;
 }
 
+function statusBadge(vehicle) {
+  if (vehicle.status !== "reserved" && vehicle.status !== "sold") return "";
+  return `<span class="status-pill status-pill--${vehicle.status}">${statusFor(vehicle, lang)}</span>`;
+}
+
 function vehicleCard(vehicle) {
+  const title = escapeHtml(titleFor(vehicle, lang));
+  const facts = [vehicle.year, vehicle.mileage ? formatKm(vehicle.mileage) : "", fuelFor(vehicle.fuel, lang), labelFor(vehicle.transmission, lang)]
+    .filter(Boolean)
+    .map((fact) => `<li>${escapeHtml(fact)}</li>`)
+    .join("");
   return `
-    <article class="vehicle-card reveal" data-brand="${vehicle.brand}" data-fuel="${vehicle.fuel}" data-status="${vehicle.status}">
-      <a href="${vehicleUrl(vehicle, lang)}" aria-label="${t.viewVehicle}: ${titleFor(vehicle, lang)}">
+    <article class="vehicle-card reveal">
+      <a href="${vehicleUrl(vehicle, lang)}" aria-label="${t.viewVehicle}: ${title}">
         <div class="vehicle-card__image">
-          <img src="${coverImage(vehicle)}" alt="${titleFor(vehicle, lang)}" loading="lazy">
-          <span class="status-pill">${statusFor(vehicle, lang)}</span>
+          <img src="${escapeHtml(coverImage(vehicle))}" alt="${title}" loading="lazy">
+          ${statusBadge(vehicle)}
         </div>
         <div class="vehicle-card__body">
-          <div class="vehicle-card__kicker">${vehicle.brand} · ${vehicle.stockNumber || ""}</div>
-          <h3>${titleFor(vehicle, lang)}</h3>
-          <p class="price">${formatPrice(vehicle)}</p>
-          <div class="meta">
-            <span>${vehicle.year}</span>
-            <span>${formatKm(vehicle.mileage)}</span>
-            <span>${fuelFor(vehicle.fuel, lang)}</span>
-            <span>${vehicle.transmission}</span>
-          </div>
+          <p class="vehicle-card__brand">${escapeHtml(vehicle.brand || "")}</p>
+          <h3>${title}</h3>
+          <ul class="fact-list">${facts}</ul>
+          <p class="price">${formatPrice(vehicle, lang)}</p>
         </div>
       </a>
     </article>
@@ -117,18 +122,16 @@ function vehicleCard(vehicle) {
 async function renderHome() {
   if (!$("#homePage")) return;
   const { vehicles } = await publicApi(`/api/public/vehicles?lang=${lang}`);
-  const featured = vehicles.filter((vehicle) => vehicle.featured).slice(0, 3);
-  $("#featuredVehicles").innerHTML = featured.map(vehicleCard).join("");
+  const newestFirst = [...vehicles].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const listed = [...newestFirst.filter((vehicle) => vehicle.featured), ...newestFirst.filter((vehicle) => !vehicle.featured)].slice(0, 6);
+  $("#featuredVehicles").innerHTML = listed.length ? listed.map(vehicleCard).join("") : `<p class="empty-state">${t.noVehicles}</p>`;
 
-  const showcaseVehicle = featured[0] || vehicles[0];
-  if (showcaseVehicle) {
-    $(".showcase-image").style.backgroundImage = `url("${coverImage(showcaseVehicle)}")`;
-    $("#showcaseSpecs").innerHTML = `
-      <div><strong>${showcaseVehicle.power || "-"}</strong><span>${lang === "mk" ? "Моќност" : "Output"}</span></div>
-      <div><strong>${formatKm(showcaseVehicle.mileage).replace(" km", "")}</strong><span>${lang === "mk" ? "Километри" : "Kilometres"}</span></div>
-      <div><strong>${showcaseVehicle.year}</strong><span>${lang === "mk" ? "Година" : "Model year"}</span></div>
-    `;
-    $("#showcaseLink").href = vehicleUrl(showcaseVehicle, lang);
+  const hero = listed[0];
+  if (hero && coverImage(hero)) {
+    $("#heroImage").src = coverImage(hero);
+    $("#heroImage").alt = titleFor(hero, lang);
+    $("#heroVehicle").href = vehicleUrl(hero, lang);
+    $("#heroTag").innerHTML = `<strong>${escapeHtml(titleFor(hero, lang))}</strong><span>${formatPrice(hero, lang)}</span>`;
   }
 }
 
@@ -139,7 +142,7 @@ async function initInventory() {
   const search = $("#vehicleSearch");
   const brand = $("#brandFilter");
   const fuel = $("#fuelFilter");
-  const status = $("#statusFilter");
+  const status = $("#statusFilter") || document.createElement("select");
   const sort = $("#sortVehicles");
   const count = $("#vehicleCount");
   const { vehicles } = await publicApi(`/api/public/vehicles?lang=${lang}`);
@@ -148,8 +151,8 @@ async function initInventory() {
     select.innerHTML = `<option value="">${label}</option>${values.map((value) => `<option value="${value}">${formatter(value)}</option>`).join("")}`;
   };
 
-  populate(brand, [...new Set(vehicles.map((vehicle) => vehicle.brand))].sort(), t.allBrands);
-  populate(fuel, [...new Set(vehicles.map((vehicle) => vehicle.fuel))].sort(), t.allFuel, (value) => fuelFor(value, lang));
+  populate(brand, [...new Set(vehicles.map((vehicle) => vehicle.brand).filter(Boolean))].sort(), t.allBrands);
+  populate(fuel, [...new Set(vehicles.map((vehicle) => vehicle.fuel).filter(Boolean))].sort(), t.allFuel, (value) => fuelFor(value, lang));
   status.innerHTML = `<option value="">${t.allStatuses}</option>${Object.keys(statusLabels)
     .map((value) => `<option value="${value}">${statusFor({ status: value }, lang)}</option>`)
     .join("")}`;
@@ -167,7 +170,7 @@ async function initInventory() {
     });
 
     filtered = filtered.sort((a, b) => {
-      if (sort.value === "price-asc") return Number(a.price) - Number(b.price);
+      if (sort.value === "price-asc") return (Number(a.price) || Infinity) - (Number(b.price) || Infinity);
       if (sort.value === "price-desc") return Number(b.price) - Number(a.price);
       if (sort.value === "mileage") return Number(a.mileage) - Number(b.mileage);
       if (sort.value === "year-desc") return Number(b.year) - Number(a.year);
@@ -175,7 +178,7 @@ async function initInventory() {
     });
 
     count.textContent = `${filtered.length} ${filtered.length === 1 ? t.resultOne : t.resultMany}`;
-    target.innerHTML = filtered.map(vehicleCard).join("");
+    target.innerHTML = filtered.length ? filtered.map(vehicleCard).join("") : `<p class="empty-state">${t.noVehicles}</p>`;
     initReveal();
   };
 
@@ -183,110 +186,220 @@ async function initInventory() {
   render();
 }
 
+function galleryFor(vehicle) {
+  const images = vehicle.images?.length
+    ? vehicle.images.map((image) => image.url)
+    : vehicle.photos || [];
+  const cover = coverImage(vehicle);
+  const ordered = cover ? [cover, ...images.filter((url) => url !== cover)] : images;
+  return ordered.filter(Boolean);
+}
+
+function specRows(vehicle) {
+  const mk = lang === "mk";
+  return [
+    [mk ? "Година" : "Year", vehicle.year],
+    [mk ? "Километража" : "Mileage", vehicle.mileage ? formatKm(vehicle.mileage) : ""],
+    [t.fuel, fuelFor(vehicle.fuel, lang)],
+    [mk ? "Менувач" : "Transmission", labelFor(vehicle.transmission, lang)],
+    [mk ? "Сила на моторот" : "Power", vehicle.power],
+    [mk ? "Мотор" : "Engine", vehicle.engine],
+    [mk ? "Погон" : "Drive", labelFor(vehicle.drive, lang)],
+    [mk ? "Каросерија" : "Body", labelFor(vehicle.bodyType, lang)],
+    [mk ? "Боја" : "Colour", labelFor(vehicle.exteriorColor, lang)],
+    [mk ? "Внатрешност" : "Interior", vehicle.interiorColor],
+    [mk ? "Класа на емисија" : "Emission class", vehicle.emissionClass],
+    [mk ? "Регистрација" : "Registration", vehicle.registration],
+    [mk ? "Регистрирана до" : "Registered until", vehicle.registeredUntil],
+    [mk ? "Шифра" : "Stock no.", vehicle.stockNumber]
+  ].filter(([, value]) => value !== null && value !== undefined && value !== "");
+}
+
+function initGallery(root, photos, title) {
+  if (!photos.length) return;
+  let index = 0;
+  const main = $(".gallery__main img", root);
+  const counter = $(".gallery__counter", root);
+  const thumbs = $$(".gallery__thumb", root);
+  const lightbox = $("#lightbox");
+  const lightboxImage = $("img", lightbox);
+  const lightboxCounter = $(".lightbox__counter", lightbox);
+  let lastFocus = null;
+
+  const show = (next) => {
+    index = (next + photos.length) % photos.length;
+    main.src = photos[index];
+    main.alt = `${title} – ${index + 1}/${photos.length}`;
+    counter.textContent = `${index + 1} / ${photos.length}`;
+    thumbs.forEach((thumb, i) => {
+      thumb.classList.toggle("active", i === index);
+      thumb.setAttribute("aria-current", i === index ? "true" : "false");
+    });
+    thumbs[index]?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+    if (lightbox.classList.contains("open")) {
+      lightboxImage.src = photos[index];
+      lightboxImage.alt = main.alt;
+      lightboxCounter.textContent = counter.textContent;
+    }
+  };
+
+  const open = () => {
+    lastFocus = document.activeElement;
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.classList.add("lightbox-open");
+    show(index);
+    $(".lightbox__close", lightbox).focus();
+  };
+
+  const close = () => {
+    lightbox.classList.remove("open");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("lightbox-open");
+    lastFocus?.focus();
+  };
+
+  const swipe = (element) => {
+    let startX = null;
+    element.addEventListener("touchstart", (event) => { startX = event.touches[0].clientX; }, { passive: true });
+    element.addEventListener("touchend", (event) => {
+      if (startX === null) return;
+      const delta = event.changedTouches[0].clientX - startX;
+      if (Math.abs(delta) > 40) show(index + (delta < 0 ? 1 : -1));
+      startX = null;
+    });
+  };
+
+  $(".gallery__prev", root).addEventListener("click", () => show(index - 1));
+  $(".gallery__next", root).addEventListener("click", () => show(index + 1));
+  $(".gallery__open", root).addEventListener("click", open);
+  $(".gallery__main", root).addEventListener("click", (event) => {
+    if (!event.target.closest("button")) open();
+  });
+  thumbs.forEach((thumb, i) => thumb.addEventListener("click", () => show(i)));
+  $(".lightbox__prev", lightbox).addEventListener("click", () => show(index - 1));
+  $(".lightbox__next", lightbox).addEventListener("click", () => show(index + 1));
+  $(".lightbox__close", lightbox).addEventListener("click", close);
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox || event.target.classList.contains("lightbox__stage")) close();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (!lightbox.classList.contains("open")) return;
+    if (event.key === "Escape") close();
+    if (event.key === "ArrowLeft") show(index - 1);
+    if (event.key === "ArrowRight") show(index + 1);
+  });
+  swipe($(".gallery__main", root));
+  swipe(lightbox);
+  photos.slice(1, 3).forEach((url) => { const preload = new Image(); preload.src = url; });
+  show(0);
+}
+
 async function initDetailPage() {
   const root = $("#vehicleDetail");
   if (!root) return;
+  document.documentElement.lang = lang;
 
-  const slug = root.dataset.vehicleId || window.location.pathname.split("/").filter(Boolean).pop().replace(/\.html$/, "");
-  const vehicle = await publicApi(`/api/public/vehicles/${slug}?lang=${lang}`)
+  const slug = decodeURIComponent(window.location.pathname.split("/").filter(Boolean).pop().replace(/\.html$/, ""));
+  const vehicle = await publicApi(`/api/public/vehicles/${encodeURIComponent(slug)}?lang=${lang}`)
     .then((result) => result.vehicle)
     .catch(() => null);
   if (!vehicle) {
-    root.innerHTML = `<section class="page-hero"><div class="container"><h1>Vehicle not found</h1></div></section>`;
+    root.innerHTML = `<section class="page-hero"><div class="container"><h1>${lang === "mk" ? "Возилото не е пронајдено" : "Vehicle not found"}</h1><a class="button" href="${vehiclesPath(lang)}">${t.backToVehicles}</a></div></section>`;
     return;
   }
+  root.dataset.slug = vehicle.slug;
+  localizeShell();
 
-  document.title = `VVS | ${titleFor(vehicle, lang)} ${vehicle.year}`;
-  const meta = $('meta[name="description"]');
-  if (meta) meta.setAttribute("content", `${titleFor(vehicle, lang)}. ${descriptionFor(vehicle, lang)}`);
+  const title = titleFor(vehicle, lang);
+  const safeTitle = escapeHtml(title);
+  document.title = `${title} | VVS Auto`;
+  $('meta[name="description"]')?.setAttribute("content", `${title} – ${formatPrice(vehicle, lang)}. ${descriptionFor(vehicle, lang).slice(0, 140)}`);
 
-  const specs = [
-    [lang === "mk" ? "Година" : "Year", vehicle.year],
-    [lang === "mk" ? "Километража" : "Mileage", formatKm(vehicle.mileage)],
-    [t.fuel, fuelFor(vehicle.fuel, lang)],
-    [lang === "mk" ? "Менувач" : "Transmission", vehicle.transmission],
-    [lang === "mk" ? "Каросерија" : "Body", vehicle.bodyType],
-    [lang === "mk" ? "Боја" : "Color", vehicle.exteriorColor],
-    [lang === "mk" ? "Регистрација" : "Registration", vehicle.registration],
-    [lang === "mk" ? "Регистрирана до" : "Registered until", vehicle.registeredUntil],
-    [lang === "mk" ? "Сила на моторот" : "Engine power", vehicle.power],
-    [lang === "mk" ? "Класа на емисија" : "Emission class", vehicle.emissionClass],
-    [lang === "mk" ? "Мотор" : "Engine", vehicle.engine],
-    [lang === "mk" ? "Погон" : "Drive", vehicle.drive],
-    ["Stock", vehicle.stockNumber]
-  ].filter(([, value]) => value);
-  const galleryImages = vehicle.images?.length
-    ? vehicle.images
-    : (vehicle.photos || []).map((url, index) => ({ url, isCover: index === (vehicle.coverIndex || 0) }));
+  const photos = galleryFor(vehicle);
+  const whatsappText = `${t.vehicleMessage} ${title}${vehicle.stockNumber ? ` (${vehicle.stockNumber})` : ""} – ${location.href}`;
+  const quickFacts = [
+    vehicle.year,
+    vehicle.mileage ? formatKm(vehicle.mileage) : "",
+    fuelFor(vehicle.fuel, lang),
+    labelFor(vehicle.transmission, lang),
+    vehicle.power
+  ].filter(Boolean);
+  const equipment = equipmentFor(vehicle, lang);
+  const description = descriptionFor(vehicle, lang);
 
   root.innerHTML = `
-    <section class="detail-hero">
-      <img id="detailHeroImage" src="${coverImage(vehicle)}" alt="${titleFor(vehicle, lang)}">
-      <div class="container detail-content">
-        <p class="eyebrow">${vehicle.brand} · ${statusFor(vehicle, lang)}</p>
-        <h1>${titleFor(vehicle, lang)}</h1>
-        <div class="detail-price">${formatPrice(vehicle)}</div>
-        <div class="hero-actions">
-          <a class="button" href="#inquiry">${t.inquire}</a>
-          <a class="button ghost" href="${phoneHref(VVS_PHONE_PRIMARY)}">${t.call}</a>
-          <a class="button ghost" href="${whatsAppHref(VVS_PHONE_PRIMARY, `${titleFor(vehicle, lang)} ${vehicle.stockNumber}`)}">${t.whatsapp}</a>
-        </div>
-      </div>
-    </section>
-    <section class="section tight">
-      <div class="container gallery-strip">
-        ${galleryImages
-          .map(
-            (photo, index) => `
-              <button class="gallery-thumb ${photo.isCover ? "active" : ""}" type="button" data-photo="${photo.url}">
-                <img src="${photo.url}" alt="${titleFor(vehicle, lang)} photo ${index + 1}" loading="lazy">
-              </button>`
-          )
-          .join("")}
-      </div>
-    </section>
-    <section class="section">
-      <div class="container detail-grid">
-        <main>
-          <p class="eyebrow">${t.overview}</p>
-          <h2>${vehicle.year} ${titleFor(vehicle, lang)} ${vehicle.variant || ""}</h2>
-          <p>${descriptionFor(vehicle, lang)}</p>
-          <div class="spec-grid">
-            ${specs.map(([label, value]) => `<div class="spec-card"><span>${label}</span><strong>${value}</strong></div>`).join("")}
+    <div class="container detail">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="${vehiclesPath(lang)}">${t.vehicles}</a><span aria-hidden="true">/</span><span>${safeTitle}</span>
+      </nav>
+      <div class="detail__top">
+        <section class="gallery" aria-label="${t.allPhotos}">
+          <div class="gallery__main">
+            ${photos.length ? `<img src="${escapeHtml(photos[0])}" alt="${safeTitle}">` : `<div class="gallery__empty"></div>`}
+            ${statusBadge(vehicle)}
+            ${photos.length > 1 ? `
+              <button class="gallery__nav gallery__prev" type="button" aria-label="${t.previous}"><span aria-hidden="true">‹</span></button>
+              <button class="gallery__nav gallery__next" type="button" aria-label="${t.next}"><span aria-hidden="true">›</span></button>` : ""}
+            <span class="gallery__counter">1 / ${photos.length}</span>
+            <button class="gallery__open" type="button">${t.allPhotos} (${photos.length})</button>
           </div>
-          <section class="section tight">
-            <p class="eyebrow">${t.equipment}</p>
-            <h2>${t.selectedSpec}</h2>
-            <ul class="equipment-grid">
-              ${equipmentFor(vehicle, lang).map((item) => `<li>${item}</li>`).join("")}
-            </ul>
-          </section>
-        </main>
-        <aside class="contact-panel" id="inquiry">
-          <p class="eyebrow">${t.interested}</p>
-          <h2>${t.speak}</h2>
-          <p>${t.speakText}</p>
-          <div class="button-row">
-            <a class="button" href="${phoneHref(VVS_PHONE_PRIMARY)}">${VVS_PHONE_PRIMARY}</a>
-            <a class="button ghost" href="${whatsAppHref(VVS_PHONE_PRIMARY, `${titleFor(vehicle, lang)} ${vehicle.stockNumber}`)}">${t.whatsapp}</a>
-            <a class="button ghost" href="${publicBase(lang)}/${lang === "en" ? "contact" : "kontakt"}/">${t.inquire}</a>
+          ${photos.length > 1 ? `
+            <div class="gallery__thumbs">
+              ${photos.map((url, i) => `<button class="gallery__thumb" type="button" aria-label="${i + 1} / ${photos.length}"><img src="${escapeHtml(url)}" alt="" loading="lazy"></button>`).join("")}
+            </div>` : ""}
+        </section>
+        <aside class="summary">
+          <p class="summary__brand">${escapeHtml(vehicle.brand || "")}</p>
+          <h1>${safeTitle}</h1>
+          ${vehicle.variant ? `<p class="summary__variant">${escapeHtml(vehicle.variant)}</p>` : ""}
+          <ul class="fact-list fact-list--large">${quickFacts.map((fact) => `<li>${escapeHtml(fact)}</li>`).join("")}</ul>
+          <p class="summary__price">${formatPrice(vehicle, lang)}</p>
+          <div class="summary__actions">
+            <a class="button button--block" href="${phoneHref(VVS_PHONE_PRIMARY)}">${t.call} ${VVS_PHONE_PRIMARY}</a>
+            <a class="button button--whatsapp button--block" href="${whatsAppHref(VVS_PHONE_PRIMARY, whatsappText)}" target="_blank" rel="noopener">${t.whatsapp}</a>
           </div>
+          <p class="summary__note">${escapeHtml(vehicle.location || "Skopje")} · ${t.appointment}</p>
         </aside>
       </div>
-    </section>
-    <nav class="sticky-mobile-cta" aria-label="Quick vehicle contact">
+
+      <div class="detail__body">
+        <section class="detail__section">
+          <h2>${t.keyFacts}</h2>
+          <dl class="spec-table">
+            ${specRows(vehicle).map(([label, value]) => `<div><dt>${label}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}
+          </dl>
+        </section>
+        ${description ? `
+        <section class="detail__section">
+          <h2>${t.description}</h2>
+          <p class="detail__description">${escapeHtml(description)}</p>
+        </section>` : ""}
+        ${equipment.length ? `
+        <section class="detail__section">
+          <h2>${t.equipment}</h2>
+          <ul class="equipment-list">${equipment.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+        </section>` : ""}
+      </div>
+    </div>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="${t.allPhotos}" aria-hidden="true">
+      <div class="lightbox__bar">
+        <span class="lightbox__counter"></span>
+        <button class="lightbox__close" type="button" aria-label="${t.close}">✕</button>
+      </div>
+      <div class="lightbox__stage"><img alt=""></div>
+      <button class="lightbox__nav lightbox__prev" type="button" aria-label="${t.previous}"><span aria-hidden="true">‹</span></button>
+      <button class="lightbox__nav lightbox__next" type="button" aria-label="${t.next}"><span aria-hidden="true">›</span></button>
+    </div>
+
+    <nav class="sticky-cta" aria-label="${t.contact}">
       <a class="button" href="${phoneHref(VVS_PHONE_PRIMARY)}">${t.call}</a>
-      <a class="button ghost" href="${whatsAppHref(VVS_PHONE_PRIMARY)}">${t.whatsapp}</a>
+      <a class="button button--whatsapp" href="${whatsAppHref(VVS_PHONE_PRIMARY, whatsappText)}" target="_blank" rel="noopener">${t.whatsapp}</a>
     </nav>
   `;
 
-  $$(".gallery-thumb").forEach((button) => {
-    button.addEventListener("click", () => {
-      $("#detailHeroImage").src = button.dataset.photo;
-      $$(".gallery-thumb").forEach((item) => item.classList.remove("active"));
-      button.classList.add("active");
-    });
-  });
+  initGallery(root, photos, title);
 }
 
 function renderAboutContact() {
