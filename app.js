@@ -188,7 +188,8 @@ async function initDetailPage() {
   const root = $("#vehicleDetail");
   if (!root) return;
 
-  const vehicle = await publicApi(`/api/public/vehicles/${root.dataset.vehicleId}?lang=${lang}`)
+  const slug = root.dataset.vehicleId || window.location.pathname.split("/").filter(Boolean).pop().replace(/\.html$/, "");
+  const vehicle = await publicApi(`/api/public/vehicles/${slug}?lang=${lang}`)
     .then((result) => result.vehicle)
     .catch(() => null);
   if (!vehicle) {

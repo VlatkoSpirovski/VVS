@@ -50,6 +50,10 @@ function requireAuth(req, res, next) {
   return res.redirect("/admin/login");
 }
 
+function sendPage(res, ...segments) {
+  return res.sendFile(path.join(root, ...segments));
+}
+
 function publicVehicleWhere({ includeSold = true } = {}) {
   return includeSold
     ? "WHERE v.published = true AND v.status <> 'hidden'"
@@ -528,13 +532,33 @@ app.post("/api/admin/uploads/signature", requireAuth, (req, res) => {
 
 app.get("/admin/login", (req, res) => {
   if (req.session?.adminUserId) return res.redirect("/admin/");
-  res.sendFile(path.join(root, "admin", "login.html"));
+  sendPage(res, "admin", "login.html");
 });
 
 app.get("/admin", requireAuth, (req, res) => res.redirect("/admin/"));
-app.get("/admin/", requireAuth, (req, res) => res.sendFile(path.join(root, "admin", "index.html")));
-app.get("/admin/admin.js", requireAuth, (req, res) => res.sendFile(path.join(root, "admin", "admin.js")));
-app.get("/admin/login.js", (req, res) => res.sendFile(path.join(root, "admin", "login.js")));
+app.get("/admin/", requireAuth, (req, res) => sendPage(res, "admin", "index.html"));
+app.get("/admin/admin.js", requireAuth, (req, res) => sendPage(res, "admin", "admin.js"));
+app.get("/admin/login.js", (req, res) => sendPage(res, "admin", "login.js"));
+
+app.get("/", (req, res) => res.redirect("/mk/"));
+app.get("/mk", (req, res) => res.redirect("/mk/"));
+app.get("/en", (req, res) => res.redirect("/en/"));
+app.get("/mk/", (req, res) => sendPage(res, "mk", "index.html"));
+app.get("/en/", (req, res) => sendPage(res, "en", "index.html"));
+app.get("/mk/vozila", (req, res) => res.redirect("/mk/vozila/"));
+app.get("/en/vehicles", (req, res) => res.redirect("/en/vehicles/"));
+app.get("/mk/vozila/", (req, res) => sendPage(res, "mk", "vozila", "index.html"));
+app.get("/en/vehicles/", (req, res) => sendPage(res, "en", "vehicles", "index.html"));
+app.get("/mk/za-nas", (req, res) => res.redirect("/mk/za-nas/"));
+app.get("/en/about", (req, res) => res.redirect("/en/about/"));
+app.get("/mk/kontakt", (req, res) => res.redirect("/mk/kontakt/"));
+app.get("/en/contact", (req, res) => res.redirect("/en/contact/"));
+app.get("/mk/za-nas/", (req, res) => sendPage(res, "mk", "za-nas", "index.html"));
+app.get("/en/about/", (req, res) => sendPage(res, "en", "about", "index.html"));
+app.get("/mk/kontakt/", (req, res) => sendPage(res, "mk", "kontakt", "index.html"));
+app.get("/en/contact/", (req, res) => sendPage(res, "en", "contact", "index.html"));
+app.get("/mk/vozila/:slug.html", (req, res) => sendPage(res, "vehicle-detail.html"));
+app.get("/en/vehicles/:slug.html", (req, res) => sendPage(res, "vehicle-detail.html"));
 
 app.use(express.static(root, { extensions: ["html"] }));
 
