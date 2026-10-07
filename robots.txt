@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vvs-auto.local/sitemap.xml

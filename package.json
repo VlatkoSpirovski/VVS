@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "dev": "node server.js",
+    "check": "node scripts/check-site.mjs",
+    "db:migrate": "node scripts/migrate.mjs",
+    "db:seed": "node scripts/seed.mjs"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.11.0",
+    "connect-pg-simple": "^10.0.0",
+    "dotenv": "^18.0.6",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "multer": "^2.4.0",
+    "pg": "^8.23.1"
+  }
+}

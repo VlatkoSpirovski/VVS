@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="mk">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VVS Admin Login</title>
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body class="admin-body">
+    <main class="admin-login">
+      <div>
+        <img class="footer-logo" src="/assets/vvs-auto-logo.jpeg" alt="VVS Auto logo">
+        <p class="eyebrow">VVS Admin</p>
+        <h1>Најава</h1>
+        <p>Најавете се за управување со возила, фотографии, содржина и барања.</p>
+        <form id="loginForm" class="form-card">
+          <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="username" required></div>
+          <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required></div>
+          <button class="button dark" type="submit">Најави се</button>
+          <p id="loginError" class="form-error" role="alert"></p>
+        </form>
+      </div>
+    </main>
+    <script src="/admin/login.js"></script>
+  </body>
+</html>

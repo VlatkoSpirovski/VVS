@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VVS | Vehicles</title>
+    <meta name="description" content="Browse premium vehicles available from VVS.">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="site-header solid"><nav class="nav"><a class="brand" data-href="home" href="/en/"><img src="/assets/vvs-auto-logo.jpeg" alt="VVS Auto logo"><span>VVS</span></a><div class="nav-links"><a data-href="home" data-i18n="home" href="/en/">Home</a><a class="active" data-href="vehicles" data-i18n="vehicles" href="/en/vehicles/">Vehicles</a><a data-href="about" data-i18n="about" href="/en/about/">About</a><a data-href="contact" data-i18n="contact" href="/en/contact/">Contact</a></div><div class="nav-actions"><a class="lang-link" data-lang-switch="mk" href="/mk/vozila/">MK</a><a class="lang-link" data-lang-switch="en" href="/en/vehicles/">EN</a><button class="icon-button menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">Menu</button></div></nav></header>
+    <div class="mobile-menu" aria-hidden="true"><a data-href="home" data-i18n="home" href="/en/">Home</a><a data-href="about" data-i18n="about" href="/en/about/">About</a><a data-href="contact" data-i18n="contact" href="/en/contact/">Contact</a><a data-lang-switch="mk" href="/mk/vozila/">MK</a><a data-lang-switch="en" href="/en/vehicles/">EN</a></div>
+    <main>
+      <section class="page-hero"><div class="container"><p class="eyebrow" data-i18n="inventoryEyebrow">Inventory</p><h1 data-i18n="inventoryTitle">Selected vehicles.</h1></div></section>
+      <section class="section"><div class="container inventory-layout"><aside class="filters"><div class="field"><label for="vehicleSearch" data-i18n="search">Search</label><input id="vehicleSearch" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="BMW, SUV, stock number"></div><div class="field"><label for="brandFilter" data-i18n="brand">Brand</label><select id="brandFilter"></select></div><div class="field"><label for="fuelFilter" data-i18n="fuel">Fuel</label><select id="fuelFilter"></select></div><div class="field"><label for="statusFilter" data-i18n="status">Status</label><select id="statusFilter"></select></div><a class="button dark" data-href="contact" data-i18n="inquire" href="/en/contact/">Send inquiry</a></aside><div><div class="inventory-top"><strong id="vehicleCount">0 vehicles</strong><div class="field"><label for="sortVehicles" data-i18n="sort">Sort</label><select id="sortVehicles"><option value="newest" data-i18n="newest">Newest</option><option value="price-asc" data-i18n="priceAsc">Price: Low to high</option><option value="price-desc" data-i18n="priceDesc">Price: High to low</option><option value="mileage" data-i18n="mileageAsc">Lowest mileage</option><option value="year-desc" data-i18n="yearDesc">Year: Newest</option></select></div></div><div class="vehicle-grid" id="inventoryGrid"></div></div></div></section>
+    </main>
+    <script src="/data.js"></script><script src="/app.js"></script>
+  </body>
+</html>
