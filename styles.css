@@ -926,20 +926,74 @@ p {
 .row-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 8px;
 }
 
-.row-actions button {
-  min-height: 32px;
-  border: 1px solid var(--color-border);
+.row-actions button,
+.row-actions a {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(16, 18, 22, 0.18);
   background: #fff;
+  color: var(--color-text);
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
   cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.row-actions button:hover,
+.row-actions a:hover,
+.row-actions button:focus-visible,
+.row-actions a:focus-visible {
+  border-color: var(--color-secondary);
+  background: var(--color-secondary);
+  color: #fff;
+}
+
+.row-actions .danger:hover,
+.row-actions .danger:focus-visible {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
 }
 
 .admin-form-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
+}
+
+.static-car-form {
+  display: grid;
+  gap: 16px;
+}
+
+.fixed-fields-card .admin-form-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.translation-stack {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.publish-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  align-items: center;
+}
+
+.publish-card .eyebrow {
+  width: 100%;
+  margin: 0;
 }
 
 .language-editor {
@@ -967,6 +1021,7 @@ p {
 .photo-admin-card {
   border: 1px solid var(--color-border);
   padding: 10px;
+  background: #fff;
 }
 
 .photo-admin-card img {
@@ -974,6 +1029,19 @@ p {
   aspect-ratio: 4 / 3;
   object-fit: cover;
   margin-bottom: 10px;
+}
+
+.cover-choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.photo-actions {
+  gap: 6px;
 }
 
 .admin-tabs {
@@ -1137,7 +1205,8 @@ p {
   .contact-grid,
   .footer-grid,
   .admin-app,
-  .language-editor {
+  .language-editor,
+  .translation-stack {
     grid-template-columns: 1fr;
   }
 
@@ -1146,7 +1215,8 @@ p {
   .spec-grid,
   .equipment-grid,
   .admin-cards,
-  .admin-form-grid {
+  .admin-form-grid,
+  .fixed-fields-card .admin-form-grid {
     grid-template-columns: 1fr;
   }
 

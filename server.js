@@ -159,6 +159,9 @@ function normalizeVehicle(row) {
     exteriorColor: row.exterior_color,
     interiorColor: row.interior_color,
     firstRegistration: row.first_registration,
+    registration: row.registration,
+    registeredUntil: row.registered_until,
+    emissionClass: row.emission_class,
     location: row.location,
     availability: row.availability,
     status: row.status,
@@ -199,6 +202,9 @@ function toDbVehicle(body) {
     exteriorColor: body.exteriorColor || null,
     interiorColor: body.interiorColor || null,
     firstRegistration: body.firstRegistration || null,
+    registration: body.registration || null,
+    registeredUntil: body.registeredUntil || null,
+    emissionClass: body.emissionClass || null,
     location: body.location || null,
     availability: body.availability || null,
     status: body.status || "draft",
@@ -234,6 +240,9 @@ async function upsertVehicle(body, id = null) {
       vehicle.exteriorColor,
       vehicle.interiorColor,
       vehicle.firstRegistration,
+      vehicle.registration,
+      vehicle.registeredUntil,
+      vehicle.emissionClass,
       vehicle.location,
       vehicle.availability,
       vehicle.status,
@@ -246,23 +255,25 @@ async function upsertVehicle(body, id = null) {
             slug=$1, brand=$2, model=$3, variant=$4, stock_number=$5, year=$6, price=$7, currency=$8,
             mileage=$9, mileage_unit=$10, fuel=$11, transmission=$12, drive=$13, engine=$14,
             engine_size=$15, power=$16, torque=$17, body_type=$18, doors=$19, seats=$20,
-            exterior_color=$21, interior_color=$22, first_registration=$23, location=$24,
-            availability=$25, status=$26, featured=$27, published=$28, updated_at=now()
-           WHERE id=$29 RETURNING id, slug`,
+            exterior_color=$21, interior_color=$22, first_registration=$23, registration=$24,
+            registered_until=$25, emission_class=$26, location=$27, availability=$28, status=$29,
+            featured=$30, published=$31, updated_at=now()
+           WHERE id=$32 RETURNING id, slug`,
           [...params, id]
         )
       : await client.query(
           `INSERT INTO vehicles (
             slug, brand, model, variant, stock_number, year, price, currency, mileage, mileage_unit,
             fuel, transmission, drive, engine, engine_size, power, torque, body_type, doors, seats,
-            exterior_color, interior_color, first_registration, location, availability, status, featured, published
+            exterior_color, interior_color, first_registration, registration, registered_until, emission_class,
+            location, availability, status, featured, published
            ) VALUES (${params.map((_, index) => `$${index + 1}`).join(",")})
            RETURNING id, slug`,
           params
         );
 
     const vehicleId = result.rows[0].id;
-    for (const locale of ["mk", "en"]) {
+    for (const locale of ["mk", "sq", "en"]) {
       const translation = body.translations?.[locale] || {};
       await client.query(
         `INSERT INTO vehicle_translations (vehicle_id, locale, title, short_description, description, seo_title, seo_description)
@@ -453,6 +464,7 @@ app.post("/api/admin/vehicles/:id/duplicate", requireAuth, async (req, res, next
       featured: false,
       translations: {
         mk: { title: `${original.title} copy`, description: original.description },
+        sq: { title: `${original.title} copy`, description: original.description },
         en: { title: `${original.title} copy`, description: original.description }
       },
       images: original.images,

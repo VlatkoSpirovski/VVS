@@ -1,13 +1,10 @@
 const state = {
   vehicles: [],
-  features: [],
-  selectedFeatureIds: new Set(),
   images: [],
   editingId: null
 };
 
 const $ = (selector, scope = document) => scope.querySelector(selector);
-const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -25,16 +22,9 @@ async function api(path, options = {}) {
   return response.json();
 }
 
-function formatAdminPrice(vehicle) {
-  return new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: vehicle.currency || "EUR",
-    maximumFractionDigits: 0
-  }).format(Number(vehicle.price || 0));
-}
-
 function formatAdminKm(value) {
-  return `${new Intl.NumberFormat("de-DE").format(Number(value || 0))} km`;
+  if (!value) return "";
+  return `${new Intl.NumberFormat("de-DE").format(Number(value))} km`;
 }
 
 function slugifyAdmin(value) {
@@ -47,18 +37,13 @@ function slugifyAdmin(value) {
 }
 
 async function loadAdmin() {
-  const [dashboard, vehicles, features, inquiries] = await Promise.all([
+  const [dashboard, vehicles] = await Promise.all([
     api("/api/admin/dashboard"),
-    api("/api/admin/vehicles?lang=mk"),
-    api("/api/admin/features"),
-    api("/api/admin/inquiries")
+    api("/api/admin/vehicles?lang=mk")
   ]);
   state.vehicles = vehicles.vehicles;
-  state.features = features.features;
   renderDashboard(dashboard.stats);
   renderVehicles();
-  renderFeatures();
-  renderInquiries(inquiries.inquiries);
 }
 
 function renderDashboard(stats) {
@@ -66,8 +51,7 @@ function renderDashboard(stats) {
     ["Возила", stats.total],
     ["Објавени", stats.published],
     ["Нацрти", stats.drafts],
-    ["Продадени", stats.sold],
-    ["Барања", stats.inquiries]
+    ["Издвоени", stats.featured]
   ];
   $("#dashboard").innerHTML = cards.map(([label, value]) => `<article class="admin-card"><span>${label}</span><strong>${value}</strong></article>`).join("");
 }
@@ -78,54 +62,21 @@ function renderVehicles() {
       (vehicle) => `
         <tr>
           <td><img class="admin-thumb" src="${vehicle.coverUrl || "/assets/vvs-auto-logo.jpeg"}" alt="${vehicle.title}"></td>
-          <td><strong>${vehicle.title}</strong><br><small>${vehicle.brand} ${vehicle.model} · ${vehicle.stockNumber || ""}</small></td>
+          <td><strong>${vehicle.brand} ${vehicle.model}</strong><br><small>${vehicle.title || ""}</small></td>
           <td>${vehicle.year || ""}</td>
-          <td>${formatAdminPrice(vehicle)}</td>
+          <td>${vehicle.fuel || ""}</td>
           <td>${formatAdminKm(vehicle.mileage)}</td>
-          <td>${vehicle.status}</td>
-          <td>${vehicle.featured ? "Да" : "Не"}</td>
           <td>${vehicle.published ? "Да" : "Не"}</td>
           <td class="row-actions">
             <button type="button" data-action="edit" data-id="${vehicle.id}">Edit</button>
             <a href="/mk/vozila/${vehicle.slug}.html" target="_blank">View</a>
             <button type="button" data-action="duplicate" data-id="${vehicle.id}">Duplicate</button>
             <button type="button" data-action="publish" data-id="${vehicle.id}">${vehicle.published ? "Unpublish" : "Publish"}</button>
-            <button type="button" data-action="delete" data-id="${vehicle.id}">Delete</button>
+            <button class="danger" type="button" data-action="delete" data-id="${vehicle.id}">Delete</button>
           </td>
         </tr>`
     )
     .join("");
-}
-
-function renderFeatures() {
-  $("#featureGrid").innerHTML = state.features
-    .map(
-      (feature) => `
-        <label class="feature-chip">
-          <input type="checkbox" value="${feature.id}" ${state.selectedFeatureIds.has(feature.id) ? "checked" : ""}>
-          <span>${feature.name_mk}<small>${feature.name_en}</small></span>
-        </label>`
-    )
-    .join("");
-}
-
-function renderInquiries(inquiries) {
-  $("#inquiryRows").innerHTML =
-    inquiries
-      .map(
-        (inquiry) => `
-          <article class="inquiry-card">
-            <div><strong>${inquiry.name}</strong><br><small>${inquiry.phone}${inquiry.email ? ` · ${inquiry.email}` : ""}</small></div>
-            <p>${inquiry.message || ""}</p>
-            <small>${inquiry.brand || ""} ${inquiry.model || ""} · ${new Date(inquiry.created_at).toLocaleString()}</small>
-          </article>`
-      )
-      .join("") || "<p>No inquiries yet.</p>";
-}
-
-function setActiveTab(tab) {
-  $$(".admin-tab").forEach((button) => button.classList.toggle("active", button.dataset.tab === tab));
-  $$(".admin-tab-panel").forEach((panel) => panel.classList.toggle("active", panel.dataset.panel === tab));
 }
 
 function setField(id, value) {
@@ -133,19 +84,20 @@ function setField(id, value) {
   if (node) node.value = value ?? "";
 }
 
+function vehicleTitle(vehicle) {
+  return [vehicle?.brand, vehicle?.model, vehicle?.year].filter(Boolean).join(" ");
+}
+
 function openEditor(vehicle = null) {
   state.editingId = vehicle?.id || null;
-  state.selectedFeatureIds = new Set((vehicle?.features || []).map((feature) => feature.id));
   state.images = (vehicle?.images || []).map((image) => ({ ...image, isCover: Boolean(image.isCover) }));
 
   $("#editorTitle").textContent = vehicle ? "Edit vehicle" : "Додади возило";
   $("#editorPanel").hidden = false;
-  setActiveTab("basic");
 
-  const fields = [
+  [
     "brand",
     "model",
-    "variant",
     "slug",
     "stockNumber",
     "year",
@@ -155,32 +107,23 @@ function openEditor(vehicle = null) {
     "status",
     "fuel",
     "transmission",
-    "drive",
-    "engine",
-    "engineSize",
     "power",
-    "torque",
     "bodyType",
-    "doors",
-    "seats",
     "exteriorColor",
-    "interiorColor",
-    "firstRegistration",
-    "location",
-    "availability"
-  ];
+    "registration",
+    "registeredUntil",
+    "emissionClass"
+  ].forEach((field) => setField(field, vehicle?.[field]));
 
-  fields.forEach((field) => setField(field, vehicle?.[field]));
   $("#vehicleId").value = vehicle?.id || "";
-  $("#published").checked = Boolean(vehicle?.published);
+  $("#currency").value = vehicle?.currency || "EUR";
+  $("#status").value = vehicle?.status || "published";
+  $("#published").checked = vehicle ? Boolean(vehicle.published) : true;
   $("#featured").checked = Boolean(vehicle?.featured);
-  $("#titleMk").value = vehicle?.translations?.mk?.title || vehicle?.title || "";
-  $("#titleEn").value = vehicle?.translations?.en?.title || vehicle?.title || "";
-  $("#descriptionMk").value = vehicle?.translations?.mk?.description || "";
+  $("#descriptionMk").value = vehicle?.translations?.mk?.description || vehicle?.description || "";
+  $("#descriptionSq").value = vehicle?.translations?.sq?.description || "";
   $("#descriptionEn").value = vehicle?.translations?.en?.description || "";
-  $("#photoInput").value = state.images.map((image) => image.url).join("\n");
 
-  renderFeatures();
   renderPhotoPreview();
   $("#editorPanel").scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -191,67 +134,64 @@ function renderPhotoPreview() {
       (image, index) => `
         <article class="photo-admin-card">
           <img src="${image.url}" alt="Vehicle image">
-          <label><input type="radio" name="coverImage" data-photo-action="cover" data-index="${index}" ${image.isCover ? "checked" : ""}> Cover</label>
-          <div class="row-actions">
+          <label class="cover-choice"><input type="radio" name="coverImage" data-photo-action="cover" data-index="${index}" ${image.isCover ? "checked" : ""}> Cover photo</label>
+          <div class="row-actions photo-actions">
             <button type="button" data-photo-action="up" data-index="${index}">Up</button>
             <button type="button" data-photo-action="down" data-index="${index}">Down</button>
-            <button type="button" data-photo-action="delete" data-index="${index}">Delete</button>
+            <button class="danger" type="button" data-photo-action="delete" data-index="${index}">Delete</button>
           </div>
         </article>`
     )
     .join("");
 }
 
-function syncPhotosFromTextarea() {
-  const urls = $("#photoInput").value.split("\n").map((url) => url.trim()).filter(Boolean);
-  state.images = urls.map((url, index) => ({
-    url,
-    isCover: state.images[index]?.isCover || index === 0
-  }));
-  if (!state.images.some((image) => image.isCover) && state.images[0]) state.images[0].isCover = true;
-  renderPhotoPreview();
-}
-
 function collectVehicle() {
   const brand = $("#brand").value.trim();
   const model = $("#model").value.trim();
-  const slug = $("#slug").value.trim() || slugifyAdmin(`${brand}-${model}`);
+  const year = Number($("#year").value) || null;
+  const existingSlug = $("#vehicleId").value ? $("#slug").value.trim() : "";
+  const slug = existingSlug || slugifyAdmin(`${brand}-${model}-${year || ""}-${Date.now().toString(36)}`);
+  const title = [brand, model, year].filter(Boolean).join(" ");
 
   return {
     slug,
     brand,
     model,
-    variant: $("#variant").value.trim(),
-    stockNumber: $("#stockNumber").value.trim(),
-    year: Number($("#year").value) || null,
+    variant: "",
+    stockNumber: $("#stockNumber").value.trim() || null,
+    year,
     price: Number($("#price").value) || 0,
-    currency: $("#currency").value,
+    currency: $("#currency").value || "EUR",
     mileage: Number($("#mileage").value) || null,
     mileageUnit: "km",
-    status: $("#status").value,
+    status: $("#published").checked ? "published" : ($("#status").value || "draft"),
     published: $("#published").checked,
     featured: $("#featured").checked,
     fuel: $("#fuel").value.trim(),
     transmission: $("#transmission").value.trim(),
-    drive: $("#drive").value.trim(),
-    engine: $("#engine").value.trim(),
-    engineSize: $("#engineSize").value.trim(),
+    drive: "",
+    engine: "",
+    engineSize: "",
     power: $("#power").value.trim(),
-    torque: $("#torque").value.trim(),
+    torque: "",
     bodyType: $("#bodyType").value.trim(),
-    doors: Number($("#doors").value) || null,
-    seats: Number($("#seats").value) || null,
+    doors: null,
+    seats: null,
     exteriorColor: $("#exteriorColor").value.trim(),
-    interiorColor: $("#interiorColor").value.trim(),
-    firstRegistration: $("#firstRegistration").value.trim(),
-    location: $("#location").value.trim(),
-    availability: $("#availability").value.trim(),
+    interiorColor: "",
+    firstRegistration: "",
+    registration: $("#registration").value.trim(),
+    registeredUntil: $("#registeredUntil").value.trim(),
+    emissionClass: $("#emissionClass").value.trim(),
+    location: "",
+    availability: "",
     translations: {
-      mk: { title: $("#titleMk").value.trim() || `${brand} ${model}`, description: $("#descriptionMk").value.trim() },
-      en: { title: $("#titleEn").value.trim() || `${brand} ${model}`, description: $("#descriptionEn").value.trim() }
+      mk: { title, description: $("#descriptionMk").value.trim() },
+      sq: { title, description: $("#descriptionSq").value.trim() },
+      en: { title, description: $("#descriptionEn").value.trim() }
     },
     images: state.images,
-    featureIds: [...state.selectedFeatureIds]
+    featureIds: []
   };
 }
 
@@ -263,7 +203,7 @@ async function uploadFiles(files) {
       body: JSON.stringify({ folder: "vvs/vehicles" })
     });
   } catch (error) {
-    alert("Cloudinary is not configured yet. Paste image URLs for now, then add Cloudinary env vars.");
+    alert("Cloudinary upload is not configured yet. Add the Cloudinary environment variables in Vercel.");
     return;
   }
 
@@ -289,7 +229,6 @@ async function uploadFiles(files) {
       });
     }
   }
-  $("#photoInput").value = state.images.map((image) => image.url).join("\n");
   renderPhotoPreview();
 }
 
@@ -301,16 +240,10 @@ $("#logoutButton").addEventListener("click", async () => {
 $("#addVehicleButton").addEventListener("click", () => openEditor());
 $("#cancelEditButton").addEventListener("click", () => ($("#editorPanel").hidden = true));
 
-$("#brand").addEventListener("input", () => {
-  if (!$("#vehicleId").value) $("#slug").value = slugifyAdmin(`${$("#brand").value}-${$("#model").value}`);
-});
-$("#model").addEventListener("input", () => {
-  if (!$("#vehicleId").value) $("#slug").value = slugifyAdmin(`${$("#brand").value}-${$("#model").value}`);
-});
-
-$(".admin-tabs").addEventListener("click", (event) => {
-  const button = event.target.closest("[data-tab]");
-  if (button) setActiveTab(button.dataset.tab);
+["brand", "model", "year"].forEach((id) => {
+  $(`#${id}`).addEventListener("input", () => {
+    if (!$("#vehicleId").value) $("#slug").value = slugifyAdmin(`${$("#brand").value}-${$("#model").value}-${$("#year").value}`);
+  });
 });
 
 $("#vehicleRows").addEventListener("click", async (event) => {
@@ -334,34 +267,12 @@ $("#vehicleRows").addEventListener("click", async (event) => {
   }
 
   if (action.dataset.action === "delete") {
+    if (!confirm("Delete this vehicle?")) return;
     await api(`/api/admin/vehicles/${id}`, { method: "DELETE" });
     await loadAdmin();
   }
 });
 
-$("#featureGrid").addEventListener("change", (event) => {
-  const input = event.target.closest("input[type='checkbox']");
-  if (!input) return;
-  if (input.checked) state.selectedFeatureIds.add(input.value);
-  else state.selectedFeatureIds.delete(input.value);
-});
-
-$("#addFeatureButton").addEventListener("click", async () => {
-  const nameMk = $("#newFeatureMk").value.trim();
-  const nameEn = $("#newFeatureEn").value.trim();
-  if (!nameMk || !nameEn) return;
-  const { feature } = await api("/api/admin/features", {
-    method: "POST",
-    body: JSON.stringify({ nameMk, nameEn })
-  });
-  state.features.push(feature);
-  state.selectedFeatureIds.add(feature.id);
-  $("#newFeatureMk").value = "";
-  $("#newFeatureEn").value = "";
-  renderFeatures();
-});
-
-$("#syncPhotosButton").addEventListener("click", syncPhotosFromTextarea);
 $("#photoUpload").addEventListener("change", (event) => uploadFiles(event.target.files));
 
 $("#photoPreview").addEventListener("click", (event) => {
@@ -374,13 +285,11 @@ $("#photoPreview").addEventListener("click", (event) => {
   if (action === "up" && index > 0) [state.images[index - 1], state.images[index]] = [state.images[index], state.images[index - 1]];
   if (action === "down" && index < state.images.length - 1) [state.images[index], state.images[index + 1]] = [state.images[index + 1], state.images[index]];
   if (!state.images.some((image) => image.isCover) && state.images[0]) state.images[0].isCover = true;
-  $("#photoInput").value = state.images.map((image) => image.url).join("\n");
   renderPhotoPreview();
 });
 
 $("#vehicleForm").addEventListener("submit", async (event) => {
   event.preventDefault();
-  syncPhotosFromTextarea();
   const body = collectVehicle();
   const id = $("#vehicleId").value;
   await api(id ? `/api/admin/vehicles/${id}` : "/api/admin/vehicles", {

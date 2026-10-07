@@ -205,11 +205,14 @@ async function initDetailPage() {
     [lang === "mk" ? "Километража" : "Mileage", formatKm(vehicle.mileage)],
     [t.fuel, fuelFor(vehicle.fuel, lang)],
     [lang === "mk" ? "Менувач" : "Transmission", vehicle.transmission],
-    [lang === "mk" ? "Мотор" : "Engine", vehicle.engine],
-    [lang === "mk" ? "Моќност" : "Power", vehicle.power],
-    [lang === "mk" ? "Погон" : "Drive", vehicle.drive],
     [lang === "mk" ? "Каросерија" : "Body", vehicle.bodyType],
     [lang === "mk" ? "Боја" : "Color", vehicle.exteriorColor],
+    [lang === "mk" ? "Регистрација" : "Registration", vehicle.registration],
+    [lang === "mk" ? "Регистрирана до" : "Registered until", vehicle.registeredUntil],
+    [lang === "mk" ? "Сила на моторот" : "Engine power", vehicle.power],
+    [lang === "mk" ? "Класа на емисија" : "Emission class", vehicle.emissionClass],
+    [lang === "mk" ? "Мотор" : "Engine", vehicle.engine],
+    [lang === "mk" ? "Погон" : "Drive", vehicle.drive],
     ["Stock", vehicle.stockNumber]
   ].filter(([, value]) => value);
   const galleryImages = vehicle.images?.length

@@ -14,7 +14,6 @@
         <nav>
           <a href="#dashboard">Dashboard</a>
           <a href="#vehicles">Возила</a>
-          <a href="#inquiries">Барања</a>
           <a href="/mk/">Public MK</a>
           <a href="/en/">Public EN</a>
         </nav>
@@ -33,7 +32,7 @@
           <div class="admin-panel__head"><div><p class="eyebrow">Inventory</p><h2>Возила</h2></div></div>
           <div class="admin-table-wrap">
             <table class="admin-table">
-              <thead><tr><th>Фото</th><th>Возило</th><th>Година</th><th>Цена</th><th>Километража</th><th>Статус</th><th>Издвоено</th><th>Објавено</th><th>Акции</th></tr></thead>
+              <thead><tr><th>Фото</th><th>Возило</th><th>Година</th><th>Гориво</th><th>Километража</th><th>Објавено</th><th>Акции</th></tr></thead>
               <tbody id="vehicleRows"></tbody>
             </table>
           </div>
@@ -43,80 +42,58 @@
           <div class="admin-panel__head"><div><p class="eyebrow">Vehicle editor</p><h2 id="editorTitle">Додади возило</h2></div></div>
           <form id="vehicleForm" class="admin-form">
             <input type="hidden" id="vehicleId">
-            <div class="admin-tabs" role="tablist">
-              <button class="admin-tab active" type="button" data-tab="basic">Основни</button>
-              <button class="admin-tab" type="button" data-tab="technical">Технички</button>
-              <button class="admin-tab" type="button" data-tab="content">Јазици</button>
-              <button class="admin-tab" type="button" data-tab="media">Фотографии</button>
-            </div>
+            <input type="hidden" id="slug">
+            <input type="hidden" id="stockNumber">
+            <input type="hidden" id="price">
+            <input type="hidden" id="currency" value="EUR">
+            <input type="hidden" id="status" value="published">
 
-            <section class="admin-tab-panel active" data-panel="basic">
-              <div class="admin-form-grid">
-                <div class="field"><label for="brand">Brand</label><input id="brand" required></div>
-                <div class="field"><label for="model">Model</label><input id="model" required></div>
-                <div class="field"><label for="variant">Variant</label><input id="variant"></div>
-                <div class="field"><label for="slug">Slug</label><input id="slug" required></div>
-                <div class="field"><label for="stockNumber">Stock number</label><input id="stockNumber"></div>
-                <div class="field"><label for="year">Year</label><input id="year" type="number"></div>
-                <div class="field"><label for="price">Price</label><input id="price" type="number"></div>
-                <div class="field"><label for="currency">Currency</label><select id="currency"><option>EUR</option><option>MKD</option></select></div>
-                <div class="field"><label for="mileage">Mileage</label><input id="mileage" type="number"></div>
-                <div class="field"><label for="status">Status</label><select id="status"><option value="draft">Нацрт</option><option value="published">Објавено</option><option value="reserved">Резервирано</option><option value="sold">Продадено</option><option value="hidden">Скриено</option></select></div>
-                <label class="check-field"><input id="featured" type="checkbox"> Издвоено</label>
-                <label class="check-field"><input id="published" type="checkbox"> Објавено</label>
-              </div>
-            </section>
+            <div class="static-car-form">
+              <section class="form-card fixed-fields-card">
+                <p class="eyebrow">Фиксни полиња</p>
+                <h3>Спецификација</h3>
+                <div class="admin-form-grid">
+                  <div class="field"><label for="brand">Марка</label><input id="brand" required></div>
+                  <div class="field"><label for="model">Модел</label><input id="model" required></div>
+                  <div class="field"><label for="year">Година</label><input id="year" type="number"></div>
+                  <div class="field"><label for="fuel">Гориво</label><input id="fuel"></div>
+                  <div class="field"><label for="mileage">Километри</label><input id="mileage" type="number"></div>
+                  <div class="field"><label for="transmission">Менувач</label><input id="transmission"></div>
+                  <div class="field"><label for="bodyType">Каросерија</label><input id="bodyType"></div>
+                  <div class="field"><label for="exteriorColor">Боја</label><input id="exteriorColor"></div>
+                  <div class="field"><label for="registration">Регистрација</label><input id="registration"></div>
+                  <div class="field"><label for="registeredUntil">Регистрирана до</label><input id="registeredUntil" placeholder="09.2026"></div>
+                  <div class="field"><label for="power">Сила на моторот</label><input id="power" placeholder="81 kw / 110 ks"></div>
+                  <div class="field"><label for="emissionClass">Класа на емисија</label><input id="emissionClass" placeholder="Euro 5"></div>
+                </div>
+              </section>
 
-            <section class="admin-tab-panel" data-panel="technical">
-              <div class="admin-form-grid">
-                <div class="field"><label for="fuel">Fuel</label><input id="fuel"></div>
-                <div class="field"><label for="transmission">Transmission</label><input id="transmission"></div>
-                <div class="field"><label for="drive">Drive</label><input id="drive"></div>
-                <div class="field"><label for="engine">Engine</label><input id="engine"></div>
-                <div class="field"><label for="engineSize">Engine size</label><input id="engineSize"></div>
-                <div class="field"><label for="power">Power</label><input id="power"></div>
-                <div class="field"><label for="torque">Torque</label><input id="torque"></div>
-                <div class="field"><label for="bodyType">Body type</label><input id="bodyType"></div>
-                <div class="field"><label for="doors">Doors</label><input id="doors" type="number"></div>
-                <div class="field"><label for="seats">Seats</label><input id="seats" type="number"></div>
-                <div class="field"><label for="exteriorColor">Exterior color</label><input id="exteriorColor"></div>
-                <div class="field"><label for="interiorColor">Interior color</label><input id="interiorColor"></div>
-                <div class="field"><label for="firstRegistration">First registration</label><input id="firstRegistration"></div>
-                <div class="field"><label for="location">Location</label><input id="location"></div>
-                <div class="field"><label for="availability">Availability</label><input id="availability"></div>
-              </div>
-            </section>
+              <section class="form-card">
+                <p class="eyebrow">Превод</p>
+                <h3>Опис на возило</h3>
+                <div class="translation-stack">
+                  <div class="field"><label for="descriptionMk">Македонски</label><textarea id="descriptionMk" rows="5"></textarea></div>
+                  <div class="field"><label for="descriptionSq">Shqip</label><textarea id="descriptionSq" rows="5"></textarea></div>
+                  <div class="field"><label for="descriptionEn">English</label><textarea id="descriptionEn" rows="5"></textarea></div>
+                </div>
+              </section>
 
-            <section class="admin-tab-panel" data-panel="content">
-              <div class="language-editor">
-                <div class="form-card"><h3>Македонски</h3><div class="field"><label for="titleMk">Title MK</label><input id="titleMk"></div><div class="field"><label for="descriptionMk">Description MK</label><textarea id="descriptionMk" rows="7"></textarea></div></div>
-                <div class="form-card"><h3>English</h3><div class="field"><label for="titleEn">Title EN</label><input id="titleEn"></div><div class="field"><label for="descriptionEn">Description EN</label><textarea id="descriptionEn" rows="7"></textarea></div></div>
-              </div>
-              <div class="form-card">
-                <h3>Опрема / Features</h3>
-                <div class="feature-grid" id="featureGrid"></div>
-                <div class="inline-fields"><input id="newFeatureMk" placeholder="Нова опрема MK"><input id="newFeatureEn" placeholder="New feature EN"><button class="button ghost" id="addFeatureButton" type="button">Add feature</button></div>
-              </div>
-            </section>
-
-            <section class="admin-tab-panel" data-panel="media">
-              <div class="form-card">
-                <h3>Фотографии</h3>
-                <p>Upload uses Cloudinary when env vars are configured. You can also paste image URLs below.</p>
-                <label class="upload-zone" for="photoUpload">Drop/upload multiple photos<input id="photoUpload" type="file" accept="image/*" multiple hidden></label>
-                <div class="field"><label for="photoInput">Image URLs, one per line</label><textarea id="photoInput" rows="5"></textarea></div>
-                <button class="button ghost" id="syncPhotosButton" type="button">Update gallery</button>
+              <section class="form-card">
+                <p class="eyebrow">Фотографии</p>
+                <h3>Слики</h3>
+                <label class="upload-zone" for="photoUpload">Upload vehicle images<input id="photoUpload" type="file" accept="image/*" multiple hidden></label>
                 <div class="photo-admin-grid" id="photoPreview"></div>
-              </div>
-            </section>
+              </section>
+
+              <section class="form-card publish-card">
+                <p class="eyebrow">Објава</p>
+                <label class="check-field"><input id="published" type="checkbox" checked> Објавено на веб</label>
+                <label class="check-field"><input id="featured" type="checkbox"> Издвоено на почетна</label>
+              </section>
+            </div>
 
             <div class="button-row"><button class="button dark" type="submit">Save vehicle</button><button class="button ghost" id="cancelEditButton" type="button">Cancel</button></div>
           </form>
-        </section>
-
-        <section id="inquiries" class="admin-panel">
-          <div class="admin-panel__head"><div><p class="eyebrow">Leads</p><h2>Барања</h2></div></div>
-          <div id="inquiryRows" class="inquiry-list"></div>
         </section>
       </div>
     </main>

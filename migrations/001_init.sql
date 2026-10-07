@@ -33,6 +33,9 @@ CREATE TABLE IF NOT EXISTS vehicles (
   exterior_color TEXT,
   interior_color TEXT,
   first_registration TEXT,
+  registration TEXT,
+  registered_until TEXT,
+  emission_class TEXT,
   location TEXT,
   availability TEXT,
   status TEXT NOT NULL DEFAULT 'draft',
@@ -44,7 +47,7 @@ CREATE TABLE IF NOT EXISTS vehicles (
 
 CREATE TABLE IF NOT EXISTS vehicle_translations (
   vehicle_id UUID NOT NULL REFERENCES vehicles(id) ON DELETE CASCADE,
-  locale TEXT NOT NULL CHECK (locale IN ('mk', 'en')),
+  locale TEXT NOT NULL CHECK (locale IN ('mk', 'sq', 'en')),
   title TEXT NOT NULL,
   short_description TEXT,
   description TEXT,
