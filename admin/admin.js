@@ -67,12 +67,14 @@ function renderVehicles() {
           <td>${vehicle.fuel || ""}</td>
           <td>${formatAdminKm(vehicle.mileage)}</td>
           <td>${vehicle.published ? "Да" : "Не"}</td>
-          <td class="row-actions">
-            <button type="button" data-action="edit" data-id="${vehicle.id}">Edit</button>
-            <a href="/mk/vozila/${vehicle.slug}.html" target="_blank">View</a>
-            <button type="button" data-action="duplicate" data-id="${vehicle.id}">Duplicate</button>
-            <button type="button" data-action="publish" data-id="${vehicle.id}">${vehicle.published ? "Unpublish" : "Publish"}</button>
-            <button class="danger" type="button" data-action="delete" data-id="${vehicle.id}">Delete</button>
+          <td class="actions-cell">
+            <div class="row-actions table-actions">
+              <button type="button" data-action="edit" data-id="${vehicle.id}">Edit</button>
+              <a href="/mk/vozila/${vehicle.slug}.html" target="_blank">View</a>
+              <button type="button" data-action="duplicate" data-id="${vehicle.id}">Duplicate</button>
+              <button type="button" data-action="publish" data-id="${vehicle.id}">${vehicle.published ? "Unpublish" : "Publish"}</button>
+              <button class="danger" type="button" data-action="delete" data-id="${vehicle.id}">Delete</button>
+            </div>
           </td>
         </tr>`
     )
@@ -132,12 +134,10 @@ function renderPhotoPreview() {
   $("#photoPreview").innerHTML = state.images
     .map(
       (image, index) => `
-        <article class="photo-admin-card">
+        <article class="photo-admin-card" draggable="true" data-photo-index="${index}">
           <img src="${image.url}" alt="Vehicle image">
-          <label class="cover-choice"><input type="radio" name="coverImage" data-photo-action="cover" data-index="${index}" ${image.isCover ? "checked" : ""}> Cover photo</label>
-          <div class="row-actions photo-actions">
-            <button type="button" data-photo-action="up" data-index="${index}">Up</button>
-            <button type="button" data-photo-action="down" data-index="${index}">Down</button>
+          <div class="photo-card-footer">
+            <label class="cover-choice"><input type="radio" name="coverImage" data-photo-action="cover" data-index="${index}" ${image.isCover ? "checked" : ""}> Cover photo</label>
             <button class="danger" type="button" data-photo-action="delete" data-index="${index}">Delete</button>
           </div>
         </article>`
@@ -282,10 +282,48 @@ $("#photoPreview").addEventListener("click", (event) => {
   const action = control.dataset.photoAction;
   if (action === "cover") state.images.forEach((image, i) => (image.isCover = i === index));
   if (action === "delete") state.images.splice(index, 1);
-  if (action === "up" && index > 0) [state.images[index - 1], state.images[index]] = [state.images[index], state.images[index - 1]];
-  if (action === "down" && index < state.images.length - 1) [state.images[index], state.images[index + 1]] = [state.images[index + 1], state.images[index]];
   if (!state.images.some((image) => image.isCover) && state.images[0]) state.images[0].isCover = true;
   renderPhotoPreview();
+});
+
+$("#photoPreview").addEventListener("dragstart", (event) => {
+  const card = event.target.closest(".photo-admin-card");
+  if (!card) return;
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", card.dataset.photoIndex);
+  card.classList.add("dragging");
+});
+
+$("#photoPreview").addEventListener("dragover", (event) => {
+  const card = event.target.closest(".photo-admin-card");
+  if (!card) return;
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+  document.querySelectorAll(".photo-admin-card.drag-over").forEach((node) => node.classList.remove("drag-over"));
+  card.classList.add("drag-over");
+});
+
+$("#photoPreview").addEventListener("dragleave", (event) => {
+  const card = event.target.closest(".photo-admin-card");
+  if (card) card.classList.remove("drag-over");
+});
+
+$("#photoPreview").addEventListener("drop", (event) => {
+  const card = event.target.closest(".photo-admin-card");
+  if (!card) return;
+  event.preventDefault();
+  const from = Number(event.dataTransfer.getData("text/plain"));
+  const to = Number(card.dataset.photoIndex);
+  if (Number.isNaN(from) || Number.isNaN(to) || from === to) return;
+  const [moved] = state.images.splice(from, 1);
+  state.images.splice(to, 0, moved);
+  renderPhotoPreview();
+});
+
+$("#photoPreview").addEventListener("dragend", () => {
+  document.querySelectorAll(".photo-admin-card.dragging, .photo-admin-card.drag-over").forEach((node) => {
+    node.classList.remove("dragging", "drag-over");
+  });
 });
 
 $("#vehicleForm").addEventListener("submit", async (event) => {
