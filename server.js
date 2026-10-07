@@ -13,6 +13,8 @@ const PgSession = connectPgSimple(session);
 const root = __dirname;
 const port = process.env.PORT || 4173;
 
+app.set("trust proxy", 1);
+
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 
