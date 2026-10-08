@@ -20,6 +20,7 @@ function initChrome() {
   updateHeader();
   window.addEventListener("scroll", updateHeader, { passive: true });
 
+
   const setMenu = (open) => {
     document.body.classList.toggle("menu-open", open);
     toggle?.setAttribute("aria-expanded", String(open));
