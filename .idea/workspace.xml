@@ -138,7 +138,7 @@
       <workItem from="1791361450098" duration="3411000" />
       <workItem from="1791372742258" duration="1757000" />
       <workItem from="1791459833925" duration="799000" />
-      <workItem from="1791463674533" duration="581000" />
+      <workItem from="1791463674533" duration="634000" />
     </task>
     <task id="LOCAL-00001" summary="VVS initial commit">
       <option name="closed" value="true" />
@@ -284,7 +284,23 @@
       <option name="project" value="LOCAL" />
       <updated>1791464251374</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="landing page change 2">
+      <option name="closed" value="true" />
+      <created>1791464264029</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1791464264029</updated>
+    </task>
+    <task id="LOCAL-00020" summary="landing page change 2">
+      <option name="closed" value="true" />
+      <created>1791464294952</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1791464294952</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
