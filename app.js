@@ -131,17 +131,16 @@ function vehicleCard(vehicle) {
 
 async function renderHome() {
   if (!$("#homePage")) return;
-  const { vehicles } = await publicApi(`/api/public/vehicles?lang=${lang}`);
-  const newestFirst = [...vehicles].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  const listed = [...newestFirst.filter((vehicle) => vehicle.featured), ...newestFirst.filter((vehicle) => !vehicle.featured)].slice(0, 6);
-  $("#featuredVehicles").innerHTML = listed.length ? listed.map(vehicleCard).join("") : `<p class="empty-state">${t.noVehicles}</p>`;
-
-  const hero = listed[0];
-  if (hero && coverImage(hero)) {
-    $("#heroImage").src = coverImage(hero);
-    $("#heroImage").alt = titleFor(hero, lang);
-    $("#heroVehicle").href = vehicleUrl(hero, lang);
-    $("#heroTag").innerHTML = `<strong>${escapeHtml(titleFor(hero, lang))}</strong><span>${formatPrice(hero, lang)}</span>`;
+  const target = $("#featuredVehicles");
+  if (!target) return;
+  try {
+    const { vehicles } = await publicApi(`/api/public/vehicles?lang=${lang}`);
+    const newestFirst = [...vehicles].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const listed = [...newestFirst.filter((vehicle) => vehicle.featured), ...newestFirst.filter((vehicle) => !vehicle.featured)].slice(0, 6);
+    target.innerHTML = listed.length ? listed.map(vehicleCard).join("") : `<p class="empty-state">${t.noVehicles}</p>`;
+  } catch (error) {
+    console.warn("Featured vehicles unavailable:", error);
+    target.innerHTML = `<p class="empty-state">${t.noVehicles}</p>`;
   }
 }
 
@@ -369,7 +368,7 @@ async function initDetailPage() {
             <a class="button button--block" href="${phoneHref(VVS_PHONE_PRIMARY)}">${t.call} ${VVS_PHONE_PRIMARY}</a>
             <a class="button button--whatsapp button--block" href="${whatsAppHref(VVS_PHONE_PRIMARY, whatsappText)}" target="_blank" rel="noopener">${t.whatsapp}</a>
           </div>
-          <p class="summary__note">${escapeHtml(vehicle.location || "Skopje")} · ${t.appointment}</p>
+          <p class="summary__note">${escapeHtml(vehicle.location || "Gostivar")} · ${t.appointment}</p>
         </aside>
       </div>
 
@@ -440,7 +439,7 @@ async function boot() {
 boot().catch((error) => {
   console.error(error);
   const main = $("main");
-  if (main) {
+  if (main && !$("#homePage")) {
     main.innerHTML = `<section class="page-hero"><div class="container"><p class="eyebrow">Database</p><h1>Database connection required.</h1><p>Add DATABASE_URL, run migrations and seed, then restart the server.</p></div></section>`;
   }
 });

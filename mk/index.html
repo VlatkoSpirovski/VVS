@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>VVS Auto | Половни автомобили, Скопје</title>
-    <meta name="description" content="VVS Auto – проверени половни автомобили во Скопје. Цена, фотографии и директен контакт.">
+    <title>VVS Auto | Половни автомобили, Гостивар</title>
+    <meta name="description" content="VVS Auto – проверени половни автомобили во Гостивар. Цена, фотографии и директен контакт.">
     <meta name="theme-color" content="#0b0c0f">
     <link rel="icon" href="/assets/vvs-auto-logo.jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,19 +26,21 @@
       <div class="mobile-menu" aria-hidden="true"><a class="active" aria-current="page" data-href="home" data-i18n="home" href="/mk/">Почетна</a><a data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a><div class="mobile-menu__lang"><a data-lang-switch="mk" href="/mk/">MK</a><a data-lang-switch="en" href="/en/">EN</a></div><a class="button" href="tel:+38978427074">Повикај +389 78 427 074</a></div>
     </header>
     <main id="homePage">
-      <section class="hero">
-        <div class="container hero__grid">
-          <div class="hero__copy">
-            <p class="eyebrow" data-i18n="heroEyebrow"></p>
-            <h1 data-i18n="heroTitle"></h1>
-            <p class="hero__text" data-i18n="heroText"></p>
-            <ul class="hero__points">
-              <li>Проверени возила</li>
-              <li>Јасна цена</li>
-              <li>Гледање по договор</li>
-            </ul>
+      <section class="hero hero--lot" aria-label="VVS Auto плац">
+        <div class="hero__bg" aria-hidden="true">
+          <img class="hero__bg-img hero__bg-img--primary" src="/assets/lot-photo.jpg" alt="" width="1024" height="768" fetchpriority="high">
+          <img class="hero__bg-img hero__bg-img--aerial" src="/assets/lot-birdseye.jpg" alt="" width="1280" height="720">
+          <div class="hero__veil"></div>
+        </div>
+        <div class="container hero__content">
+          <p class="eyebrow" data-i18n="heroEyebrow"></p>
+          <p class="hero__brand">VVS Auto</p>
+          <h1 data-i18n="heroTitle"></h1>
+          <p class="hero__text" data-i18n="heroText"></p>
+          <div class="button-row hero__actions">
+            <a class="button" data-href="vehicles" data-i18n="exploreVehicles" href="/mk/vozila/">Погледнете ги возилата</a>
+            <a class="button ghost" href="tel:+38978427074">+389 78 427 074</a>
           </div>
-          <a class="hero__media" id="heroVehicle" href="/mk/vozila/"><img id="heroImage" src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1400&q=80" alt=""><span class="hero__tag" id="heroTag"></span></a>
         </div>
       </section>
       <section class="section">
@@ -61,6 +63,21 @@
           </div>
         </div>
       </section>
+      <section class="lot-band" aria-label="Посетете го плацот">
+        <div class="lot-band__media">
+          <img src="/assets/lot-birdseye.jpg" alt="Воздушен поглед на плацот на VVS Auto во Гостивар" width="1280" height="720" loading="lazy">
+          <div class="lot-band__veil"></div>
+        </div>
+        <div class="container lot-band__content">
+          <p class="eyebrow" data-i18n="lotEyebrow"></p>
+          <h2 data-i18n="lotTitle"></h2>
+          <p data-i18n="lotText"></p>
+          <div class="button-row">
+            <a class="button ghost" data-href="contact" href="/mk/kontakt/">Посета по договор</a>
+            <a class="button ghost" href="https://maps.google.com/?q=41.7979176,20.9000803" target="_blank" rel="noopener">Отвори на мапа</a>
+          </div>
+        </div>
+      </section>
       <section class="cta-band">
         <div class="container cta-band__inner">
           <div><p class="eyebrow" data-i18n="ctaEyebrow"></p><h2 data-i18n="ctaTitle"></h2></div>
@@ -73,7 +90,7 @@
         <div><a class="brand brand--footer" href="/mk/"><img src="/assets/vvs-auto-logo.jpeg" alt="" width="40" height="40"><span>VVS Auto</span></a><p>Возила со проверена историја, јасна цена и директен контакт.</p></div>
         <div><h3>Возила</h3><div class="footer-links"><a data-href="vehicles" data-i18n="vehicles" href="/mk/vozila/">Возила</a><a data-href="about" data-i18n="about" href="/mk/za-nas/">За нас</a><a data-href="contact" data-i18n="contact" href="/mk/kontakt/">Контакт</a></div></div>
         <div><h3>Контакт</h3><div class="footer-links"><a href="tel:+38978427074">+389 78 427 074</a><a href="tel:+38978391140">+389 78 391 140</a><a href="https://wa.me/38978427074" target="_blank" rel="noopener">WhatsApp</a></div></div>
-        <div><h3 data-i18n="location">Локација</h3><p>Скопје, Северна Македонија<br><span data-i18n="appointment">По договор</span></p></div>
+        <div><h3 data-i18n="location">Локација</h3><p><a href="https://maps.google.com/?q=41.7979176,20.9000803" target="_blank" rel="noopener">ул. 101, Гостивар</a><br><span data-i18n="appointment">По договор</span></p></div>
       </div>
       <div class="container footer-bottom"><span>© 2026 VVS Auto. Сите права задржани.</span><a class="footer-admin" href="/admin/login" rel="nofollow">Админ</a></div>
     </footer>
