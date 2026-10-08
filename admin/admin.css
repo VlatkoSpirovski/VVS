@@ -59,6 +59,20 @@ textarea {
   color: inherit;
 }
 
+button,
+.adm-btn,
+.adm-icon-btn,
+.adm-nav a,
+.adm-nav button,
+.adm-actions button,
+.adm-actions a,
+.adm-upload,
+.adm-brand,
+.adm-login__back,
+.adm-photo__foot button {
+  cursor: pointer;
+}
+
 :focus-visible {
   outline: none;
   box-shadow: var(--focus);
@@ -112,6 +126,9 @@ h2 {
 /* Buttons */
 
 .adm-btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   min-height: 40px;
   display: inline-flex;
   align-items: center;
@@ -125,7 +142,32 @@ h2 {
   white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
-  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+
+.adm-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.28) 48%,
+    rgba(255, 255, 255, 0.08) 56%,
+    transparent 68%
+  );
+  transform: translateX(-120%);
+  transition: transform 480ms ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.adm-btn:hover:not(:disabled)::after {
+  transform: translateX(120%);
+}
+
+.adm-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
 }
 
 .adm-btn:disabled {
@@ -140,6 +182,7 @@ h2 {
 
 .adm-btn--primary:hover:not(:disabled) {
   background: var(--red-dark);
+  box-shadow: 0 8px 18px rgba(225, 37, 43, 0.28);
 }
 
 .adm-btn--ghost {
@@ -149,6 +192,7 @@ h2 {
 
 .adm-btn--ghost:hover {
   border-color: var(--text);
+  box-shadow: 0 8px 18px rgba(13, 15, 19, 0.08);
 }
 
 .adm-btn--quiet-dark {
@@ -175,10 +219,13 @@ h2 {
   border-radius: 50%;
   background: var(--surface);
   cursor: pointer;
+  transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 
 .adm-icon-btn:hover {
   border-color: var(--text);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(13, 15, 19, 0.08);
 }
 
 /* Shell */
@@ -317,6 +364,13 @@ h2 {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.adm-stat:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: 0 10px 24px rgba(13, 15, 19, 0.07);
 }
 
 .adm-stat span {
@@ -496,12 +550,14 @@ h2 {
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 
 .adm-actions button:hover,
 .adm-actions a:hover {
   border-color: var(--text);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(13, 15, 19, 0.08);
 }
 
 .adm-actions [data-action="edit"] {
@@ -1131,5 +1187,17 @@ body.has-drawer {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .adm-btn:hover:not(:disabled),
+  .adm-icon-btn:hover,
+  .adm-actions button:hover,
+  .adm-actions a:hover,
+  .adm-stat:hover {
+    transform: none;
+  }
+
+  .adm-btn::after {
+    display: none;
   }
 }

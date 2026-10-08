@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3c53f5e5-1bd7-4a1f-91c1-9cc0f126d246" name="Changes" comment="mobile design 3">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="3" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;VlatkoSpirovski&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/VlatkoSpirovski/VVS.git&quot;,
+    &quot;accountId&quot;: &quot;9c82a23b-4bc8-448c-9ce3-d65f3a4a1163&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0" />
+      <entry key="S10" value="1.0000000004671834" />
+      <entry key="S30" value="1.0026084989527193" />
+      <entry key="S60" value="1.14141201345132" />
+      <entry key="M2" value="2.201698940621613" />
+      <entry key="M5" value="6.4792308603410955" />
+      <entry key="M10" value="11.905945852540796" />
+      <entry key="M15" value="15.47503938348034" />
+      <entry key="M30" value="21.35096923813209" />
+      <entry key="H1" value="28.33081203430121" />
+      <entry key="H2" value="37.73712197569981" />
+      <entry key="H4" value="46.87948238915372" />
+      <entry key="D1" value="58.907711939327655" />
+      <entry key="W1" value="61.54156579015766" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.9592641193252643" />
+      <entry key="MS500" value="0.9917167307382933" />
+      <entry key="S2" value="0.9979227189990506" />
+      <entry key="S5" value="0.999168569213607" />
+      <entry key="S10" value="0.9995841986282133" />
+      <entry key="S30" value="1.0024695225214593" />
+      <entry key="S60" value="1.141330618112692" />
+      <entry key="M2" value="2.20158501411051" />
+      <entry key="M5" value="6.479007422931399" />
+      <entry key="M10" value="11.905698300951505" />
+      <entry key="M15" value="15.474811194506996" />
+      <entry key="M30" value="21.350802398493407" />
+      <entry key="H1" value="28.33069732936938" />
+      <entry key="H2" value="37.7370431394319" />
+      <entry key="H4" value="46.8794323441045" />
+      <entry key="D1" value="58.90770123839442" />
+      <entry key="W1" value="61.54156418713941" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3KMJLeEOIVTc1O4qJwQT0MQGYRe" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "javascript.preferred.runtime.type.id": "node",
+    "last_opened_file_path": "/Users/vlatkospirovski/Desktop/other/VVS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-WS-261.24374.125" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3c53f5e5-1bd7-4a1f-91c1-9cc0f126d246" name="Changes" comment="" />
+      <created>1791361448897</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1791361448897</updated>
+      <workItem from="1791361450098" duration="3411000" />
+      <workItem from="1791372742258" duration="1757000" />
+      <workItem from="1791459833925" duration="601000" />
+    </task>
+    <task id="LOCAL-00001" summary="VVS initial commit">
+      <option name="closed" value="true" />
+      <created>1791362146268</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1791362146268</updated>
+    </task>
+    <task id="LOCAL-00002" summary="VVS initial commit - 2">
+      <option name="closed" value="true" />
+      <created>1791362580474</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1791362580474</updated>
+    </task>
+    <task id="LOCAL-00003" summary="VVS initial commit - 2">
+      <option name="closed" value="true" />
+      <created>1791362677314</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1791362677314</updated>
+    </task>
+    <task id="LOCAL-00004" summary="VVS initial commit - 3">
+      <option name="closed" value="true" />
+      <created>1791362924312</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1791362924312</updated>
+    </task>
+    <task id="LOCAL-00005" summary="fix deployment">
+      <option name="closed" value="true" />
+      <created>1791363086319</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1791363086319</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fix style">
+      <option name="closed" value="true" />
+      <created>1791363205347</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1791363205347</updated>
+    </task>
+    <task id="LOCAL-00007" summary="fix login">
+      <option name="closed" value="true" />
+      <created>1791371228458</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1791371228458</updated>
+    </task>
+    <task id="LOCAL-00008" summary="fix login">
+      <option name="closed" value="true" />
+      <created>1791371324607</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1791371324607</updated>
+    </task>
+    <task id="LOCAL-00009" summary="admin panel">
+      <option name="closed" value="true" />
+      <created>1791372217538</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1791372217538</updated>
+    </task>
+    <task id="LOCAL-00010" summary="drag and drop photos">
+      <option name="closed" value="true" />
+      <created>1791372539224</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1791372539224</updated>
+    </task>
+    <task id="LOCAL-00011" summary="style change">
+      <option name="closed" value="true" />
+      <created>1791373252388</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1791373252388</updated>
+    </task>
+    <task id="LOCAL-00012" summary="mobile design">
+      <option name="closed" value="true" />
+      <created>1791374238075</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1791374238075</updated>
+    </task>
+    <task id="LOCAL-00013" summary="mobile design 2">
+      <option name="closed" value="true" />
+      <created>1791374246718</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1791374246718</updated>
+    </task>
+    <task id="LOCAL-00014" summary="mobile design 3">
+      <option name="closed" value="true" />
+      <created>1791374571657</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1791374571657</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="VVS initial commit" />
+    <MESSAGE value="VVS initial commit - 2" />
+    <MESSAGE value="VVS initial commit - 3" />
+    <MESSAGE value="fix deployment" />
+    <MESSAGE value="fix style" />
+    <MESSAGE value="fix login" />
+    <MESSAGE value="admin panel" />
+    <MESSAGE value="drag and drop photos" />
+    <MESSAGE value="style change" />
+    <MESSAGE value="mobile design" />
+    <MESSAGE value="mobile design 2" />
+    <MESSAGE value="mobile design 3" />
+    <option name="LAST_COMMIT_MESSAGE" value="mobile design 3" />
+  </component>
+</project>
